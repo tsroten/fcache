@@ -25,6 +25,7 @@ Classes:
 
 """
 
+import datetime
 import hashlib
 import os
 import pickle
@@ -58,10 +59,27 @@ class Cache(object):
             self._create()
 
     def get(self, name):
-        pass
+        data = self._read()
+        if data is None:
+            return None
+        if ((data[name]["expires"] is None) or
+                ((datetime.datetime.now() -
+                data[name]["expires"]).total_seconds() < 0)):
+            return data[name]["data"]
+        else:
+            return None
 
     def set(self, name, value, timeout=None):
-        pass
+        data = self._read()
+        if data is None:
+            data = {}
+        if timeout is None:
+            expires = None
+        else:
+            expires = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+        data[name] = {"expires": expires, "data": value}
+        self._write(data)
+
 
     def remove(self, name):
         pass
@@ -76,7 +94,13 @@ class Cache(object):
         os.rename(tmp, self.filename)
 
     def _read(self):
-        pass
+        with open(self.filename, "rb") as f:
+            try:
+                data = pickle.load(f)
+            except EOFError:
+                return None
+        return data
 
-    def _write(self):
-        pass
+    def _write(self, data):
+        with open(self.filename, "wb") as f:
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
