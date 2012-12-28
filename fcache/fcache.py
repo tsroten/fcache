@@ -48,13 +48,14 @@ class Cache(object):
     def __init__(self, cachename, appname, appauthor=None):
         self.cachename = cachename
         try:
-            cache_dir = appdirs.user_cache_dir(appname, appauthor)
+            self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         except AppDirsError:
             raise TypeError("'user_cache_dir' expects 'appauthor' on Windows,"
                             "but received None")
-        self.file_name = os.path.join(cache_dir,
+        self.filename = os.path.join(self.cachedir,
                                       hashlib.md5(cachename).hexdigest())
-        self.data = None
+        if os.access(self.filename, os.F_OK) is False:
+            self._create()
 
     def get(self, name):
         pass
@@ -69,7 +70,10 @@ class Cache(object):
         pass
 
     def _create(self):
-        pass
+        if os.access(self.cachedir, os.F_OK) is False:
+            os.makedirs(self.cachedir)
+        f, tmp = tempfile.mkstemp(dir=self.cachedir)
+        os.rename(tmp, self.filename)
 
     def _read(self):
         pass
