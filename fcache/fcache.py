@@ -46,7 +46,7 @@ class Cache(object):
     Example usage:
         import fcache
         # create a cache file named "temperatures" for the "weather-cli" app.
-        current_weather = fcache.Cache("temperatures", "weather-cli",
+        current_weather = fcache.Cache("conditions", "weather-cli",
                                        "Joe Developer")
         # create some data that needs to be cached.
         boston_weather = {"temp": 64, "condition": "cloudy"}
@@ -57,8 +57,8 @@ class Cache(object):
         # -> 64
 
     Methods:
-        get: read some data from the cache file
-        set: store some data into the cache file
+        get: read data key from the cache file
+        set: store data key into the cache file
         remove: delete a key from the cache file
         delete: delete the cache file and all data in it.
 
@@ -100,7 +100,7 @@ class Cache(object):
         Args:
             name: the key name of the data.
         Returns:
-            data: the asked-for data; None if couldn't be retrieved.
+            data: the asked-for data; or None if couldn't be retrieved.
 
         """
         data = self._read()
@@ -163,7 +163,7 @@ class Cache(object):
         """
         try:
             os.remove(self.filename)
-        except:
+        except OSError:
             return False
         return True
 
