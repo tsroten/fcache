@@ -2,13 +2,13 @@ import os
 import time
 import unittest
 
-import lib.fcache
+import fcache
 
 
 class testCache(unittest.TestCase):
 
     def setUp(self):
-        self.cache = lib.fcache.Cache("unittest", "fcache", "Thomas Roten")
+        self.cache = fcache.Cache("unittest", "fcache", "Thomas Roten")
         self.cache.set("num", 43)
         self.cache.set("timer", 1, 2)
 
