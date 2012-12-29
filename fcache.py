@@ -73,13 +73,14 @@ class Cache(object):
         * instances of such classes whose __dict__ or __setstate__() is
             picklable
 
-        Look at the pickle module's documentation for more details.
+        See the pickle module's documentation for more details.
 
     Methods:
-        get: read data key from the cache file
-        set: store data key in the cache file
-        remove: delete a key from the cache file
-        delete: delete the cache file and all data in it.
+        get: read data from the cache.
+        set: store data in the cache.
+        remove: remove data from the cache.
+        flush: clear all data in the cache.
+        delete: delete the cache file.
 
     """
 
@@ -87,7 +88,8 @@ class Cache(object):
         """Setup a Cache object.
 
         This method creates a cache file if there isn't one
-        already created for [cachename].
+        already created. If the [cachename] file already exists,
+        then it uses that file.
 
         Args:
             cachename: a unique name for this cache file.
@@ -96,52 +98,24 @@ class Cache(object):
             appauthor: the name of this apps author or company -- used ,
                 in Windows, to determine the correct cache directory.
         Raises:
-            TypeError: 'appauthor' was not provided, but is needed
-                because the host system is running Windows.
+            appdirs.AppDirsError: the appdirs module raises this error when
+                the host system is Windows and the "appauthor" argument
+                was not provided.
 
         """
         self.cachename = cachename
-        try:
-            self.cachedir = appdirs.user_cache_dir(appname, appauthor)
-        except appdirs.AppDirsError:
-            raise TypeError("'user_cache_dir' expects 'appauthor' on Windows,"
-                            "but received None")
+        self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
                                      hashlib.md5(cachename).hexdigest())
         if os.access(self.filename, os.F_OK) is False:
             self._create()
-
-    def get(self, name):
-        """Get data from the cache.
-
-        Args:
-            name: the key name of the data.
-        Returns:
-            data: the requested data.
-             OR
-            None: the data doesn't exist or couldn't be retrieved.
-        Raises:
-            Any of the exceptions normally raised by unpickling can be raised:
-                * UnpicklingError
-                * AttributeError
-                * ImportError
-                * IndexError
-            See the pickle module's documentation for more details.
-            Note: EOFError is handled by the _read method.
-
-        """
-        data = self._read()
-        if data is None or name not in data:
-            return None
-        if ((data[name]["expires"] is None) or
-                ((datetime.datetime.now() -
-                  data[name]["expires"]).total_seconds() < 0)):
-            return data[name]["data"]
-        else:
-            return None
+            self.flush()
 
     def set(self, name, value, timeout=None):
         """Store data in the cache.
+
+        Any picklable data can be stored in the cache. See the above Cache
+        class docstring for more information.
 
         Args:
             name: the name given to the data; to be used for retrieval.
@@ -151,11 +125,11 @@ class Cache(object):
         Raises:
             PicklingError: an unpicklable object was passed, see the pickle
                 module's documentation for more details.
+            IOError: if the cache file has been deleted and you attempt to
+                save data to it.
 
         """
         data = self._read()
-        if data is None:
-            data = {}
         if timeout is None:
             expires = None
         else:
@@ -163,6 +137,35 @@ class Cache(object):
                        datetime.timedelta(seconds=timeout))
         data[name] = {"expires": expires, "data": value}
         self._write(data)
+
+    def get(self, name):
+        """Get data from the cache.
+
+        Args:
+            name: the key name of the data.
+        Returns:
+            data: the requested data.
+             OR
+            None: the data has already expired.
+        Raises:
+            KeyError: the key [name] was not found in the data.
+            IOError: if the cache file has been deleted and you attempt to
+                read data from it.
+            Most of the exceptions normally raised by unpickling can be raised:
+                * UnpicklingError
+                * AttributeError
+                * ImportError
+                * IndexError
+                See the pickle module's documentation for more details.
+
+        """
+        data = self._read()
+        if ((data[name]["expires"] is None) or
+                ((datetime.datetime.now() -
+                  data[name]["expires"]).total_seconds() < 0)):
+            return data[name]["data"]
+        else:
+            return None
 
     def remove(self, name):
         """Remove data from the cache.
@@ -172,12 +175,28 @@ class Cache(object):
 
         Args:
             name: the key name of the data to be removed.
+        Raises:
+            KeyError: the key [name] was not found in the data.
+            IOError: if the cache file has been deleted and you attempt to
+                remove data from it.
 
         """
         data = self._read()
-        if name in data:
-            del data[name]
-            self._write(data)
+        del data[name]
+        self._write(data)
+
+    def flush(self):
+        """Clear all data in the cache.
+
+        If there is data in the cache file, this will remove it, but will not
+        delete the cache file itself.
+        
+        NOTE: If the cache file is already deleted, this will create a cache
+        file with no data.
+
+        """
+        
+        self._write({})
 
     def delete(self):
         """Delete the cache file.
@@ -186,10 +205,12 @@ class Cache(object):
         itself.
 
         Raises:
+            OSError: if the cache file has already been deleted and you attempt
+                to delete it again.
             On Windows, an exception is raised if the file being removed
-            is in use. See the os.remove method's documentation for more
-            information. fcache closes files when it is done reading/writing,
-            so this should not be a problem.
+                is in use. See the os.remove method's documentation for more
+                information. fcache closes files when it is done reading or
+                writing, so this should not be a problem.
 
         """
         os.remove(self.filename)
@@ -202,15 +223,11 @@ class Cache(object):
         os.rename(tmp, self.filename)
 
     def _read(self):
-        """Open a file and uses cPickle to retrieve its data"""
+        """Open a file and use cPickle to retrieve its data"""
         with open(self.filename, "rb") as f:
-            try:
-                data = cPickle.load(f)
-            except EOFError:
-                data = None
-        return data
+            return cPickle.load(f)
 
     def _write(self, data):
-        """Use cPickle to save data to a file"""
+        """Open a file and use cPickle to save data to it"""
         with open(self.filename, "wb") as f:
             cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)

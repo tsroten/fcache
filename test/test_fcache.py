@@ -9,29 +9,41 @@ class testCache(unittest.TestCase):
 
     def setUp(self):
         self.cache = fcache.Cache("unittest", "fcache", "Thomas Roten")
-        self.cache.set("num", 43)
-        self.cache.set("timer", 1, 2)
+        self.cache.set("n", 43)
+        self.cache.set("timer", 1, 1)
 
     def tearDown(self):
-        self.cache.delete()
+        if os.access(self.cache.filename, os.F_OK) is True:
+            self.cache.delete()
         self.cache = None
 
     def test_init(self):
         self.assertTrue(os.access(self.cache.filename, os.F_OK))
 
     def test_get(self):
-        self.assertEqual(self.cache.get("num"), 43)
-        self.assertEqual(self.cache.get("alsdf"), None)
+        self.assertEqual(self.cache.get("n"), 43)
         self.assertEqual(self.cache.get("timer"), 1)
-        time.sleep(2)
+        time.sleep(1)
         self.assertEqual(self.cache.get("timer"), None)
+        self.assertRaises(KeyError, self.cache.get, "j")
+        self.cache.delete()
+        self.assertRaises(IOError, self.cache.get, "j")
 
     def test_remove(self):
-        self.assertTrue(self.cache.remove("num"))
-        self.assertEqual(self.cache.get("num"), None)
-        self.assertFalse(self.cache.remove("jlk"))
+        self.cache.remove("n")
+        self.assertRaises(KeyError, self.cache.get, "n")
+        self.assertRaises(KeyError, self.cache.remove, "j")
+        self.cache.delete()
+        self.assertRaises(IOError, self.cache.remove, "j")
+
+    def test_flush(self):
+        self.cache.flush()
+        self.assertEqual(self.cache._read(), {})
+        self.cache.delete()
+        self.cache.flush()
+        self.assertEqual(self.cache._read(), {})
 
     def test_delete(self):
-        self.assertTrue(self.cache.delete())
+        self.cache.delete()
         self.assertFalse(os.access(self.cache.filename, os.F_OK))
-        self.assertFalse(self.cache.delete())
+        self.assertRaises(OSError, self.cache.delete)
