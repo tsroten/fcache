@@ -25,10 +25,10 @@ Classes:
 
 """
 
+import cPickle
 import datetime
 import hashlib
 import os
-import pickle
 import tempfile
 
 import appdirs
@@ -175,15 +175,15 @@ class Cache(object):
         os.rename(tmp, self.filename)
 
     def _read(self):
-        """Open a file and uses pickle to retrieve its data"""
+        """Open a file and uses cPickle to retrieve its data"""
         with open(self.filename, "rb") as f:
             try:
-                data = pickle.load(f)
+                data = cPickle.load(f)
             except EOFError:
                 return None
         return data
 
     def _write(self, data):
-        """Use pickle to save data to a file"""
+        """Use cPickle to save data to a file"""
         with open(self.filename, "wb") as f:
-            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+            cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
