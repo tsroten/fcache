@@ -176,6 +176,9 @@ class Cache(object):
 
         This removes all key/value pairs from the cache.
 
+        Raises:
+            exceptions.IOError: the cache file does not exist.
+
         """
         if os.access(self.filename, os.F_OK) is False:
             raise IOError("the following cache file does not exist: %s"

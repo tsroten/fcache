@@ -63,7 +63,7 @@ API
 
         Clear all data from the cache. This removes all key/value pairs from the cache.
 
-        :raises exceptions.IOError: the cache file does not exist or could not be written to.
+        :raises exceptions.IOError: the cache file does not exist.
 
     .. method:: delete()
 
