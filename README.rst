@@ -37,6 +37,16 @@ It's File-Based
     >>> print cache.filename
     /Users/tsr/Library/Caches/statistics-fetcher/248081ecb337c85ec8e4330e6099625a
 
+Documentation
+-------------
+
+`fcache's documentation <http://tsroten.github.com/fcache/>`_ contains a usage introduction along with an API overview. For more information on how to get started with fcache, be sure to read the documentation.
+
+Bug/Issues Tracker
+------------------
+
+fcache uses its `GitHub Issues page <https://github.com/tsroten/fcache/issues>`_ to track bugs, feature requests, and support questions.
+
 License
 -------
 
