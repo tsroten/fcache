@@ -114,7 +114,7 @@ class Cache(object):
         Raises:
             pickle.PicklingError: an unpicklable object was passed.
             exceptions.IOError: the cache file does not exist or cannot be
-                read/written to.
+                read.
 
         """
         data = self._read()
@@ -164,7 +164,7 @@ class Cache(object):
         Raises:
             exceptions.KeyError: *key* was not found.
             exceptions.IOError: the cache file does not exist or cannot be
-                read/written to.
+                read.
 
         """
         data = self._read()

@@ -37,7 +37,7 @@ API
         :param timeout: how long in seconds the data should be considered valid -- if :data:`None`, defaults to forever.
         :type timeout: :func:`int<int>`, :func:`long<long>`, :func:`float<float>`, or :data:`None`
         :raises pickle.PicklingError: an `unpicklable object <http://docs.python.org/2.7/library/pickle.html#what-can-be-pickled-and-unpickled>`_ was passed.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read/written to.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
     .. method:: get(key)
 
@@ -57,7 +57,7 @@ API
         :param key: the name of the data to remove.
         :type key: :mod:`string`
         :raises exceptions.KeyError: *key* was not found.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read/written to.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
     .. method:: flush()
 
