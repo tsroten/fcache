@@ -8,7 +8,7 @@ import fcache
 class testCache(unittest.TestCase):
 
     def setUp(self):
-        self.cache = fcache.Cache("unittest", "fcache", "Thomas Roten")
+        self.cache = fcache.Cache("unittest", "fcache")
         self.cache.set("n", 43)
         self.cache.set("timer", 1, 1)
 

@@ -47,18 +47,15 @@ class Cache(object):
     Example usage:
         import fcache
         nyc_weather = {"temp": "64", "condition": "cloudy"}
-        current_weather = fcache.Cache("weather", "weather-cli",
-                                       "Joe Developer")
+        current_weather = fcache.Cache("weather", "weather-cli")
         current_weather.set("nyc", nyc_weather, 60 * 60)
         print current_weather.get("nyc")
         # {"temp": "64", "condition": "cloudy"}
 
         The above code first creates a new Cache object named "weather"
-        for the "weather-cli" application, which was developed by Joe
-        Developer. On Windows, the developer's name is used in the cache
-        directory's path. New York's weather is saved to the "nyc" key and
-        set to expire in 1 hour. Then, New York's weather is retrieved
-        from the cache file.
+        for the "weather-cli" application. New York's weather is saved 
+        to the "nyc" key and set to expire in 1 hour. Then, New York's
+        weather is retrieved from the cache file.
 
     Types of data that can be cached:
         NOTE: fcache supports any types that the pickle module supports:
@@ -97,12 +94,15 @@ class Cache(object):
                 correct cache directory to store files in.
             appauthor: the name of this apps author or company -- used ,
                 in Windows, to determine the correct cache directory.
+                If empty or not provided, defaults to [appname].
         Raises:
             appdirs.AppDirsError: the appdirs module raises this error when
                 the host system is Windows and the "appauthor" argument
                 was not provided.
 
         """
+        if appauthor is None or appauthor == "":
+            appauthor = appname
         self.cachename = cachename
         self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
