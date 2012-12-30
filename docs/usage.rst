@@ -67,6 +67,18 @@ Set Data to Expire After a Certain Time
 
 Data can be set to expire after a certain amount of seconds. By setting data to expire in *30* seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as ``None``. We used the :func:`time.sleep` function to wait 30 seconds so that the data would expire.
 
+Invalidate Data
+---------------
+
+.. code-block:: python
+
+    >>> print cache.get("english")
+    {'ordinary': 'Hello!', 'friendly': 'Hey there!'}
+    >>> cache.invalidate("english")
+    >>> print cache.get("english")
+    None
+
+Data can be forced to expire, even if it doesn't have an expiration time. Once data is invalidated, calling :meth:`~fcache.Cache.get` on its *key* will return :data:`None`.
 
 Remove Data From the Cache
 --------------------------
@@ -93,7 +105,7 @@ Cached Data is Persistent
     >>> import fcache
     >>> cache = fcache.Cache("hello", "hello_goodbye")
     >>> print cache.get("spanish")
-    Â¡Hola!
+    ¡Hola!
 
 :mod:`fcache` provides persistent cache files. In other words, your cached data is saved even after you stop using it.
 
@@ -103,12 +115,12 @@ Clear Cached Data
 .. code-block:: python
 
     >>> cache.flush()
-    >>> print cache.get("english")
+    >>> print cache.get("spanish")
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "/Users/tsr/.virtualenvs/fcache/lib/python2.7/site-packages/fcache-0.1-py2.7.egg/fcache.py", line 163, in get
         if ((data[name]["expires"] is None) or
-    KeyError: 'english'
+    KeyError: 'spanish'
 
 Using the :meth:`~fcache.Cache.flush` method, you can clear all the data in a cache without deleting the cache file itself.
 

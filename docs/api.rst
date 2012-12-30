@@ -52,6 +52,15 @@ API
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
         :raises pickle.UnpicklingError: there was a problem unpickling an object.
 
+    .. method:: invalidate(key)
+
+        Force data to expire. After forcing *key* to expire, calling :meth:`~fcache.Cache.get` on *key* will return :data:`None`.
+
+        :param key: the name of the data to invalidate.
+        :type key: :mod:`string`
+        :raises exceptions.KeyError: *key* was not found.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+
     .. method:: remove(key)
 
         Remove data from the cache. All data stored under *key* is deleted from the cache.

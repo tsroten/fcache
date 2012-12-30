@@ -65,6 +65,7 @@ class Cache(object):
     Methods:
         set: store data in the cache.
         get: get data from the cache.
+        invalidate: force data to expire.
         remove: remove data from the cache.
         flush: clear all data from the cache.
         delete: delete the cache file.
@@ -154,6 +155,25 @@ class Cache(object):
             return data[key]["data"]
         else:
             return None
+
+    def invalidate(self, key):
+        """Force data to expire.
+
+        After forcing *key* to expire, calling get() on *key* will return
+            None.
+
+        Args:
+            key: (string) the name of the data to invalidate.
+
+        Raises:
+            exceptions.KeyError: *key* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+
+        """
+        data = self._read()
+        data[key]["expires"] = datetime.datetime.now()
+        self._write(data)
 
     def remove(self, key):
         """Remove data from the cache.

@@ -20,6 +20,10 @@ class testCache(unittest.TestCase):
     def test_init(self):
         self.assertTrue(os.access(self.cache.filename, os.F_OK))
 
+    def test_set(self):
+        self.cache.delete()
+        self.assertRaises(IOError, self.cache.set, "n", 43)
+
     def test_get(self):
         self.assertEqual(self.cache.get("n"), 43)
         self.assertEqual(self.cache.get("timer"), 1)
@@ -29,6 +33,14 @@ class testCache(unittest.TestCase):
         self.assertRaises(KeyError, self.cache.get, "j")
         self.cache.delete()
         self.assertRaises(IOError, self.cache.get, "j")
+
+    def test_invalidate(self):
+        self.assertEqual(self.cache.get("n"), 43)
+        self.cache.invalidate("n")
+        self.assertEqual(self.cache.get("n"), None)
+        self.assertRaises(KeyError, self.cache.invalidate, "j")
+        self.cache.delete()
+        self.assertRaises(IOError, self.cache.invalidate, "n")
 
     def test_remove(self):
         self.cache.remove("n")

@@ -110,6 +110,17 @@
 </div>
 <p>Data can be set to expire after a certain amount of seconds. By setting data to expire in <em>30</em> seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as <tt class="docutils literal"><span class="pre">None</span></tt>. We used the <a class="reference external" href="http://docs.python.org/2.7/library/time.html#time.sleep" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">time.sleep()</span></tt></a> function to wait 30 seconds so that the data would expire.</p>
 </div>
+<div class="section" id="invalidate-data">
+<h2>Invalidate Data<a class="headerlink" href="#invalidate-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">)</span>
+<span class="go">{&#39;ordinary&#39;: &#39;Hello!&#39;, &#39;friendly&#39;: &#39;Hey there!&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">invalidate</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<p>Data can be forced to expire, even if it doesn&#8217;t have an expiration time. Once data is invalidated, calling <a class="reference internal" href="api.html#fcache.Cache.get" title="fcache.Cache.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a> on its <em>key</em> will return <a class="reference external" href="http://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><tt class="xref py py-data docutils literal"><span class="pre">None</span></tt></a>.</p>
+</div>
 <div class="section" id="remove-data-from-the-cache">
 <h2>Remove Data From the Cache<a class="headerlink" href="#remove-data-from-the-cache" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&quot;chinese&quot;</span><span class="p">)</span>
@@ -130,7 +141,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fcache</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">fcache</span><span class="o">.</span><span class="n">Cache</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="s">&quot;hello_goodbye&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;spanish&quot;</span><span class="p">)</span>
-<span class="go">Â¡Hola!</span>
+<span class="go">¡Hola!</span>
 </pre></div>
 </div>
 <p><a class="reference internal" href="api.html#module-fcache" title="fcache"><tt class="xref py py-mod docutils literal"><span class="pre">fcache</span></tt></a> provides persistent cache files. In other words, your cached data is saved even after you stop using it.</p>
@@ -138,12 +149,12 @@
 <div class="section" id="clear-cached-data">
 <h2>Clear Cached Data<a class="headerlink" href="#clear-cached-data" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;spanish&quot;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
   File <span class="nb">&quot;/Users/tsr/.virtualenvs/fcache/lib/python2.7/site-packages/fcache-0.1-py2.7.egg/fcache.py&quot;</span>, line <span class="m">163</span>, in <span class="n">get</span>
     <span class="k">if</span> <span class="p">((</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s">&quot;expires&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;english&#39;</span>
+<span class="gr">KeyError</span>: <span class="n">&#39;spanish&#39;</span>
 </pre></div>
 </div>
 <p>Using the <a class="reference internal" href="api.html#fcache.Cache.flush" title="fcache.Cache.flush"><tt class="xref py py-meth docutils literal"><span class="pre">flush()</span></tt></a> method, you can clear all the data in a cache without deleting the cache file itself.</p>
@@ -176,6 +187,7 @@
 <li><a class="reference internal" href="#get-data-from-the-cache">Get Data from the Cache</a></li>
 <li><a class="reference internal" href="#store-other-types-of-data">Store Other Types of Data</a></li>
 <li><a class="reference internal" href="#set-data-to-expire-after-a-certain-time">Set Data to Expire After a Certain Time</a></li>
+<li><a class="reference internal" href="#invalidate-data">Invalidate Data</a></li>
 <li><a class="reference internal" href="#remove-data-from-the-cache">Remove Data From the Cache</a></li>
 <li><a class="reference internal" href="#cached-data-is-persistent">Cached Data is Persistent</a></li>
 <li><a class="reference internal" href="#clear-cached-data">Clear Cached Data</a></li>
