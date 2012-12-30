@@ -77,14 +77,14 @@ class Cache(object):
         If a matching cache file was found, a new one is not created.
 
         *appauthor* is used on Windows to determine the appropriate cache
-        directory. If not provided, it defaults to *appname*. See appdirs‘s
+        directory. If not provided, it defaults to *appname*. See appdir's
         documentation for more information.
 
         Args:
             cachename: (string) a unique name for the cache.
             appname: (string) the name of the application the cache is created
                 for.
-            appauthor: (string or None) the name of the application’s author –
+            appauthor: (string or None) the name of the application's author --
                 if None, defaults to *appname*.
 
         """
@@ -93,7 +93,7 @@ class Cache(object):
         self.cachename = cachename
         self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
-                                     hashlib.md5(cachename).hexdigest())
+                                     hashlib.sha1(cachename).hexdigest())
         if os.access(self.filename, os.F_OK) is False:
             self._create()
             self.flush()
