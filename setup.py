@@ -1,16 +1,16 @@
 from distutils.core import setup
 
+with open("README.rst") as f:
+    long_description = f.read()
+
 setup(
     name = "fcache",
-    py_modules = ["fcache"],
-    test_suite = "test",
-    install_requires = "appdirs",
     version = "0.1",
-    description = "A simple file-based cache module for Python",
     author = "Thomas Roten",
     author_email = "thomas@roten.us",
     url = "https://github.com/tsroten/fcache",
-    keywords = ["cache", "file"],
+    description = "A simple file-based cache module for Python",
+    long_description = long_description,
     classifiers = [
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -20,5 +20,8 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         ],
-    long_description = open('README.rst').read(),
+    keywords = ["cache", "file"],
+    py_modules = ["fcache"],
+    test_suite = "test",
+    install_requires = "appdirs",
 )
