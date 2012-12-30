@@ -140,7 +140,8 @@ class Cache(object):
 
         Raises:
             exceptions.KeyError: *key* was not found.
-            exceptions.IOError: the cache file does not exist or cannot be read.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
             pickle.UnpicklingError: there was a problem unpickling an object.
 
         """
@@ -175,11 +176,12 @@ class Cache(object):
 
         This removes all key/value pairs from the cache.
 
-        NOTE: If the cache file is already deleted, this will create a cache
-        file with no data.
-
         """
-        self._write({})
+        if os.access(self.filename, os.F_OK) is False:
+            raise IOError("the following cache file does not exist: %s"
+                          % self.filename)
+        else:
+            self._write({})
 
     def delete(self):
         """Delete the cache file.
