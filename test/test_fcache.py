@@ -39,9 +39,6 @@ class testCache(unittest.TestCase):
     def test_flush(self):
         self.cache.flush()
         self.assertEqual(self.cache._read(), {})
-        self.cache.delete()
-        self.cache.flush()
-        self.assertEqual(self.cache._read(), {})
 
     def test_delete(self):
         self.cache.delete()
