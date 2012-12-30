@@ -18,7 +18,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-"""A simple file-based cache module for Python.
+"""a simple, persistent, file-based cache module for Python.
 
 Classes:
     Cache: A cache that stores its data on the file system.
@@ -38,67 +38,54 @@ class Cache(object):
 
     """A cache that stores its data on the file system.
 
-    The cached data can be forced to expire after a certain amount of time or
-    be kept indefinitely. The Cache class attempts to store cache files in the
-    proper OS-designated (typically more of a convention) application cache
-    directories. See the appdirs module's documentation for information on
-    where the cache directory on each system is.
+    It uses cPickle to store objects into cache file. It uses appdirs to ensure
+    that cache files are stored in platform-appropriate, application-specific
+    cache directories. Cached data can optionally expire after a certain amount
+    of time.
 
-    Example usage:
-        import fcache
-        nyc_weather = {"temp": "64", "condition": "cloudy"}
-        current_weather = fcache.Cache("weather", "weather-cli")
-        current_weather.set("nyc", nyc_weather, 60 * 60)
-        print current_weather.get("nyc")
-        # {"temp": "64", "condition": "cloudy"}
+    Basic Usage:
 
-        The above code first creates a new Cache object named "weather"
-        for the "weather-cli" application. New York's weather is saved 
-        to the "nyc" key and set to expire in 1 hour. Then, New York's
-        weather is retrieved from the cache file.
+        >>> import fcache
+        >>> cache = fcache.Cache("population", "statistics-fetcher")
+        >>> cache.set("chicago", 9729825)
+        >>> print cache.get("chicago")
+        9729825
 
-    Types of data that can be cached:
-        NOTE: fcache supports any types that the pickle module supports:
-        * None, True, and False
-        * integers, long integers, floating point numbers, complex numbers
-        * normal and Unicode strings
-        * tuples, lists, sets, and dictionaries containing only picklable
-            objects
-        * functions defined at the top level of a module
-        * built-in functions defined at the top level of a module
-        * classes that are defined at the top level of a module
-        * instances of such classes whose __dict__ or __setstate__() is
-            picklable
+        This code creates the cache 'population' for the application
+        'statistics-fetcher'. Then, it sets the key 'chicago' to the value
+        '9729825'. Next, it prints the value of 'chicago'.
 
-        See the pickle module's documentation for more details.
+    Attributes:
+        cachename: the cache's name, as passed to the Cache constructor.
+        cachedir: the cache's parent directory, as determined by
+            appdirs.user_cache_dir().
+        filename: the cache's filename. It is formed by passing cachename to
+            hashlib's sha1() constructor.
 
     Methods:
-        get: read data from the cache.
         set: store data in the cache.
+        get: get data from the cache.
         remove: remove data from the cache.
-        flush: clear all data in the cache.
+        flush: clear all data from the cache.
         delete: delete the cache file.
 
     """
 
     def __init__(self, cachename, appname, appauthor=None):
-        """Setup a Cache object.
+        """Take *cachename* and *appname*, then create a cache file.
 
-        This method creates a cache file if there isn't one
-        already created. If the [cachename] file already exists,
-        then it uses that file.
+        If a matching cache file was found, a new one is not created.
+
+        *appauthor* is used on Windows to determine the appropriate cache
+        directory. If not provided, it defaults to *appname*. See appdirs‘s
+        documentation for more information.
 
         Args:
-            cachename: a unique name for this cache file.
-            appname: the name of this application -- used to determine the
-                correct cache directory to store files in.
-            appauthor: the name of this apps author or company -- used ,
-                in Windows, to determine the correct cache directory.
-                If empty or not provided, defaults to [appname].
-        Raises:
-            appdirs.AppDirsError: the appdirs module raises this error when
-                the host system is Windows and the "appauthor" argument
-                was not provided.
+            cachename: (string) a unique name for the cache.
+            appname: (string) the name of the application the cache is created
+                for.
+            appauthor: (string or None) the name of the application’s author –
+                if None, defaults to *appname*.
 
         """
         if appauthor is None or appauthor == "":
@@ -114,19 +101,20 @@ class Cache(object):
     def set(self, name, value, timeout=None):
         """Store data in the cache.
 
-        Any picklable data can be stored in the cache. See the above Cache
-        class docstring for more information.
+        The data, *value*, is stored under *name* in the cache. The data
+        must be picklable. Optionally, the data can expire after *timeout*
+        seconds have passed.
 
         Args:
-            name: the name given to the data; to be used for retrieval.
+            name: (string) the name given to the data.
             value: the data to be stored.
-            timeout: how long in seconds the data should be considered
-                valid -- defaults to forever.
+            timeout: (int, long, float, or None) how long in seconds the data
+                should be considered valid -- if None, defaults to forever.
+
         Raises:
-            PicklingError: an unpicklable object was passed, see the pickle
-                module's documentation for more details.
-            IOError: if the cache file has been deleted and you attempt to
-                save data to it.
+            pickle.PicklingError: an unpicklable object was passed.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read/written to.
 
         """
         data = self._read()
@@ -141,22 +129,19 @@ class Cache(object):
     def get(self, name):
         """Get data from the cache.
 
+        All data stored under *name* is returned. If the data is expired,
+        None is returned.
+
         Args:
-            name: the key name of the data.
+            name: (string) the name of the data to fetch.
+
         Returns:
-            data: the requested data.
-             OR
-            None: the data has already expired.
+            the requested data or None if the requested data has expired.
+
         Raises:
-            KeyError: the key [name] was not found in the data.
-            IOError: if the cache file has been deleted and you attempt to
-                read data from it.
-            Most of the exceptions normally raised by unpickling can be raised:
-                * UnpicklingError
-                * AttributeError
-                * ImportError
-                * IndexError
-                See the pickle module's documentation for more details.
+            exceptions.KeyError: *name* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
 
         """
         data = self._read()
@@ -170,15 +155,15 @@ class Cache(object):
     def remove(self, name):
         """Remove data from the cache.
 
-        This removes all data with key [name]. It does not delete any
-        other data keys or delete the cache file itself.
+        All data stored under *name* is deleted from the cache.
 
         Args:
-            name: the key name of the data to be removed.
+            name: (string) the name of the data to remove.
+
         Raises:
-            KeyError: the key [name] was not found in the data.
-            IOError: if the cache file has been deleted and you attempt to
-                remove data from it.
+            exceptions.KeyError: *name* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read/written to.
 
         """
         data = self._read()
@@ -188,29 +173,22 @@ class Cache(object):
     def flush(self):
         """Clear all data in the cache.
 
-        If there is data in the cache file, this will remove it, but will not
-        delete the cache file itself.
-        
+        This removes all key/value pairs from the cache.
+
         NOTE: If the cache file is already deleted, this will create a cache
         file with no data.
 
         """
-        
         self._write({})
 
     def delete(self):
         """Delete the cache file.
 
-        NOTE: this removes all data from the cache as well as the cache file
-        itself.
+        On Windows, if the file is in use by another application, an exception
+        is raised. See os.remove() for more information.
 
         Raises:
-            OSError: if the cache file has already been deleted and you attempt
-                to delete it again.
-            On Windows, an exception is raised if the file being removed
-                is in use. See the os.remove method's documentation for more
-                information. fcache closes files when it is done reading or
-                writing, so this should not be a problem.
+            exceptions.OSError: the cache file does not exist.
 
         """
         os.remove(self.filename)
