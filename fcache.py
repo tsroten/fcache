@@ -98,15 +98,15 @@ class Cache(object):
             self._create()
             self.flush()
 
-    def set(self, name, value, timeout=None):
+    def set(self, key, value, timeout=None):
         """Store data in the cache.
 
-        The data, *value*, is stored under *name* in the cache. The data
-        must be picklable. Optionally, the data can expire after *timeout*
-        seconds have passed.
+        The data, *value*, is stored under the name, *key*, in the cache.
+        The data must be picklable. Optionally, the data can expire after
+        *timeout* seconds have passed.
 
         Args:
-            name: (string) the name given to the data.
+            key: (string) the name given to the data.
             value: the data to be stored.
             timeout: (int, long, float, or None) how long in seconds the data
                 should be considered valid -- if None, defaults to forever.
@@ -123,51 +123,51 @@ class Cache(object):
         else:
             expires = (datetime.datetime.now() +
                        datetime.timedelta(seconds=timeout))
-        data[name] = {"expires": expires, "data": value}
+        data[key] = {"expires": expires, "data": value}
         self._write(data)
 
-    def get(self, name):
+    def get(self, key):
         """Get data from the cache.
 
-        All data stored under *name* is returned. If the data is expired,
+        All data stored under *key* is returned. If the data is expired,
         None is returned.
 
         Args:
-            name: (string) the name of the data to fetch.
+            key: (string) the name of the data to fetch.
 
         Returns:
             the requested data or None if the requested data has expired.
 
         Raises:
-            exceptions.KeyError: *name* was not found.
+            exceptions.KeyError: *key* was not found.
             exceptions.IOError: the cache file does not exist or cannot be read.
             pickle.UnpicklingError: there was a problem unpickling an object.
 
         """
         data = self._read()
-        if ((data[name]["expires"] is None) or
+        if ((data[key]["expires"] is None) or
                 ((datetime.datetime.now() -
-                  data[name]["expires"]).total_seconds() < 0)):
-            return data[name]["data"]
+                  data[key]["expires"]).total_seconds() < 0)):
+            return data[key]["data"]
         else:
             return None
 
-    def remove(self, name):
+    def remove(self, key):
         """Remove data from the cache.
 
-        All data stored under *name* is deleted from the cache.
+        All data stored under *key* is deleted from the cache.
 
         Args:
-            name: (string) the name of the data to remove.
+            key: (string) the name of the data to remove.
 
         Raises:
-            exceptions.KeyError: *name* was not found.
+            exceptions.KeyError: *key* was not found.
             exceptions.IOError: the cache file does not exist or cannot be
                 read/written to.
 
         """
         data = self._read()
-        del data[name]
+        del data[key]
         self._write(data)
 
     def flush(self):
