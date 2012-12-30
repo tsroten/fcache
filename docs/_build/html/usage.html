@@ -69,8 +69,8 @@
 <div class="section" id="store-data-in-the-cache">
 <h2>Store Data in the Cache<a class="headerlink" href="#store-data-in-the-cache" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">,</span> <span class="s">&quot;Hello!&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;spanish&quot;</span><span class="p">,</span> <span class="s">u&quot;Â¡Hola!&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;chinese&quot;</span><span class="p">,</span> <span class="s">u&quot;ä½ å¥½ï¼&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;spanish&quot;</span><span class="p">,</span> <span class="s">u&quot;¡Hola!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;chinese&quot;</span><span class="p">,</span> <span class="s">u&quot;你好！&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>By calling the method <a class="reference internal" href="api.html#fcache.Cache.set" title="fcache.Cache.set"><tt class="xref py py-meth docutils literal"><span class="pre">set()</span></tt></a>, you associate a <em>value</em> with a <em>key</em>, just like with a Python dictionary. In your cache file, there is now three key/value pairs.</p>
@@ -80,9 +80,9 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">)</span>
 <span class="go">Hello!</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;spanish&quot;</span><span class="p">)</span>
-<span class="go">Â¡Hola!</span>
+<span class="go">¡Hola!</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;chinese&quot;</span><span class="p">)</span>
-<span class="go">ä½ å¥½ï¼</span>
+<span class="go">你好！</span>
 </pre></div>
 </div>
 <p>By calling the method <a class="reference internal" href="api.html#fcache.Cache.get" title="fcache.Cache.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a>, you can retrieve the <em>value</em> of a <em>key</em>.</p>

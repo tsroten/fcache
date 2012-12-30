@@ -18,7 +18,7 @@ There are multiple ways to install :mod:`fcache`. If you are confused about whic
 
 `pip <http://www.pip-installer.org/>`_ is a tool for installing and managing Python packages. To install fcache, run:
 
-.. code:: bash
+.. code-block:: bash
 
     $ pip install fcache
 

@@ -21,8 +21,8 @@ Store Data in the Cache
 .. code-block:: python
 
     >>> cache.set("english", "Hello!")
-    >>> cache.set("spanish", u"Â¡Hola!")
-    >>> cache.set("chinese", u"ä½ å¥½ï¼")
+    >>> cache.set("spanish", u"¡Hola!")
+    >>> cache.set("chinese", u"你好！")
 
 By calling the method :meth:`~fcache.Cache.set`, you associate a *value* with a *key*, just like with a Python dictionary. In your cache file, there is now three key/value pairs.
 
@@ -34,9 +34,9 @@ Get Data from the Cache
     >>> print cache.get("english")
     Hello!
     >>> print cache.get("spanish")
-    Â¡Hola!
+    ¡Hola!
     >>> print cache.get("chinese")
-    ä½ å¥½ï¼
+    你好！
 
 By calling the method :meth:`~fcache.Cache.get`, you can retrieve the *value* of a *key*.
 
