@@ -126,14 +126,15 @@ class Cache(object):
         data[key] = {"expires": expires, "data": value}
         self._write(data)
 
-    def get(self, key):
+    def get(self, key, override=False):
         """Get data from the cache.
 
         All data stored under *key* is returned. If the data is expired,
-        None is returned.
+        None is returned. Expired data is returned if *override* is True.
 
         Args:
             key: (string) the name of the data to fetch.
+            override: (bool) return expired data; defaults to False.
 
         Returns:
             the requested data or None if the requested data has expired.
@@ -146,9 +147,10 @@ class Cache(object):
 
         """
         data = self._read()
-        if ((data[key]["expires"] is None) or
+        if (data[key]["expires"] is None or
                 ((datetime.datetime.now() -
-                  data[key]["expires"]).total_seconds() < 0)):
+                  data[key]["expires"]).total_seconds() < 0) or
+                override is True):
             return data[key]["data"]
         else:
             return None

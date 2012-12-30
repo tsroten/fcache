@@ -39,12 +39,14 @@ API
         :raises pickle.PicklingError: an `unpicklable object <http://docs.python.org/2.7/library/pickle.html#what-can-be-pickled-and-unpickled>`_ was passed.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
-    .. method:: get(key)
+    .. method:: get(key[, override=False])
 
-        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned.
+        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned. Expired data is returned if *override* is :data:`True`.
 
         :param key: the name of the data to fetch.
         :type key: :mod:`string`
+        :param override: return expired data; defaults to :data:`False`.
+        :type override: :func:`bool<bool>`
         :returns: the requested data or :data:`None` if the requested data has expired.
         :raises exceptions.KeyError: *key* was not found.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
