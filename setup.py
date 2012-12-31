@@ -5,11 +5,11 @@ with open("README.rst") as f:
 
 setup(
     name = "fcache",
-    version = "0.1",
+    version = "0.2",
     author = "Thomas Roten",
     author_email = "thomas@roten.us",
     url = "https://github.com/tsroten/fcache",
-    description = "A simple file-based cache module for Python",
+    description = "a simple, persistent, file-based cache module for Python",
     long_description = long_description,
     classifiers = [
         "Programming Language :: Python",
