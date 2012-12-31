@@ -17,15 +17,15 @@ API
 
     .. attribute:: cachename
         
-        The cache's name, as passed to the :class:`~fcache.Cache` constructor method.
+        The cache's name, as passed to the :class:`~fcache.Cache` constructor method. This attribute's value should not be changed unless you have good reason to do so.
 
     .. attribute:: cachedir
 
-        The cache's parent directory, as determined by :meth:`appdirs.user_cache_dir`.
+        The cache's parent directory, as determined by :meth:`appdirs.user_cache_dir`. This attribute's value should not be changed unless you have good reason to do so.
 
     .. attribute:: filename
 
-        The cache's filename. It's formed by passing :attr:`~fcache.Cache.cachename` to :mod:`hashlib`'s :meth:`sha1` constructor.
+        The cache's filename. It's formed by passing :attr:`~fcache.Cache.cachename` to :mod:`hashlib`'s :meth:`sha1` constructor. This attribute's value should not be changed unless you have **good reason** to do so. Editing it, then getting/setting data will most likely result in errors or lost data.
      
     .. method:: set(key, value[, timeout=None])
 
