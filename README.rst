@@ -47,6 +47,7 @@ It's Time-Aware
 ---------------
 
 .. code:: python
+
     >>> import time
     >>> cache.set("chicago", 9729825, 30)
     >>> print cache.get("chicago")
