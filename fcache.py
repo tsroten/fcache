@@ -25,7 +25,10 @@ Classes:
 
 """
 
-import cPickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 import datetime
 import hashlib
 import os
@@ -38,7 +41,7 @@ class Cache(object):
 
     """A cache that stores its data on the file system.
 
-    It uses cPickle to store objects into cache file. It uses appdirs to ensure
+    It uses pickle to store objects into cache file. It uses appdirs to ensure
     that cache files are stored in platform-appropriate, application-specific
     cache directories. Cached data can optionally expire after a certain amount
     of time.
@@ -228,11 +231,11 @@ class Cache(object):
         os.rename(tmp, self.filename)
 
     def _read(self):
-        """Open a file and use cPickle to retrieve its data"""
+        """Open a file and use pickle to retrieve its data"""
         with open(self.filename, "rb") as f:
-            return cPickle.load(f)
+            return pickle.load(f)
 
     def _write(self, data):
-        """Open a file and use cPickle to save data to it"""
+        """Open a file and use pickle to save data to it"""
         with open(self.filename, "wb") as f:
-            cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
