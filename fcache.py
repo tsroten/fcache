@@ -94,10 +94,10 @@ class Cache(object):
         """
         if appauthor is None or appauthor == "":
             appauthor = appname
-        self.cachename = cachename
+        self.cachename = cachename.encode('utf-8')
         self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
-                                     hashlib.sha1(cachename).hexdigest())
+                                     hashlib.sha1(self.cachename).hexdigest())
         if os.access(self.filename, os.F_OK) is False:
             self._create()
             self.flush()
