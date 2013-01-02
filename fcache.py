@@ -152,8 +152,8 @@ class Cache(object):
         """
         data = self._read()
         if (data[key]["expires"] is None or
-                ((datetime.datetime.now() -
-                  data[key]["expires"]).total_seconds() < 0) or
+                (self._total_seconds((datetime.datetime.now() -
+                 data[key]["expires"])) < 0) or
                 override is True):
             return data[key]["data"]
         else:
@@ -239,3 +239,8 @@ class Cache(object):
         """Open a file and use pickle to save data to it"""
         with open(self.filename, "wb") as f:
             pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+    def _total_seconds(self, td):
+        """Calculate the number of seconds in a timedelta object."""
+        return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
+                10**6)
