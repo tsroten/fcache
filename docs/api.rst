@@ -39,15 +39,33 @@ API
         :raises pickle.PicklingError: an `unpicklable object <http://docs.python.org/2.7/library/pickle.html#what-can-be-pickled-and-unpickled>`_ was passed.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
-    .. method:: get(key[, override=False, default=None])
+    .. method:: set_default(key[, default=None, timeout=None):
 
-        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned. Expired data is returned if *override* is :data:`True`. :exc:`exceptions.KeyError` is caught if *default* is not :data:`None`.
+        If *key* exists, return its value; if not, create *key*.
+
+        If *key* is in the cache and its data is valid, return its value. If not, store *key* with *default* value into the cache for *timeout* seconds and return *default*.
+
+        Works like :meth:`dict.setdefault`.
+
+        :param key: the name of the data to fetch/store.
+        :type key: :mod:`string`
+        :param default: data to store and return if *key* doesn't exist or doesn't have valid data. Defaults to :data:`None`.
+        :param timeout: how long in seconds *default* should be considered valid; if :data:`None`, defaults to forever.
+        :type timeout: :func:`int<int>`, :func:`long<long>`, :func:`float<float>`, or :data:`None`
+        :returns: the value of *key* if it exists and is valid; if not, then the value of *default*.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+        :raises pickle.UnpicklingError: there was a problem unpickling an object.
+        :raises pickle.PicklingError: an unpicklable object was passed.
+        .. versionadded:: 0.3
+
+    .. method:: get(key[, override=False])
+
+        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned. Expired data is returned if *override* is :data:`True`.
 
         :param key: the name of the data to fetch.
         :type key: :mod:`string`
         :param override: return expired data; defaults to :data:`False`.
         :type override: :func:`bool<bool>`
-        :param default: a default value to return if *key* was not found.
         :returns: the requested data or :data:`None` if the requested data has expired.
         :raises exceptions.KeyError: *key* was not found.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.

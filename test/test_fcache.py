@@ -25,6 +25,13 @@ class testCache(unittest.TestCase):
         self.cache.delete()
         self.assertRaises(IOError, self.cache.set, "n", 43)
 
+    def test_set_default(self):
+        self.assertEqual(self.cache.set_default("n"), 43)
+        self.assertEqual(self.cache.set_default("y", 2, .1), 2)
+        self.assertEqual(self.cache.get("y"), 2)
+        time.sleep(.1)
+        self.assertEqual(self.cache.get("y"), None)
+
     def test_get(self):
         self.assertEqual(self.cache.get("n"), 43)
         self.assertEqual(self.cache.get("timer"), 1)
@@ -32,7 +39,6 @@ class testCache(unittest.TestCase):
         self.assertEqual(self.cache.get("timer"), None)
         self.assertEqual(self.cache.get("timer", True), 1)
         self.assertRaises(KeyError, self.cache.get, "j")
-        self.assertEqual(self.cache.get("j", default="k"), "k")
         self.cache.delete()
         self.assertRaises(IOError, self.cache.get, "j")
 

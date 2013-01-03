@@ -67,6 +67,7 @@ class Cache(object):
 
     Methods:
         set: store data in the cache.
+        set_default: if valid data exists, get it; if not, store it.
         get: get data from the cache.
         invalidate: force data to expire.
         remove: remove data from the cache.
@@ -130,7 +131,50 @@ class Cache(object):
         data[key] = {"expires": expires, "data": value}
         self._write(data)
 
-    def get(self, key, override=False, default=None):
+    def set_default(self, key, default=None, timeout=None):
+        """If *key* exists, return its value; if not, create *key*.
+
+        If *key* is in the cache and its data is valid, return its value.
+        If not, store *key* with *default* value into the cache for *timeout*
+        seconds and return *default*.
+
+        Works like dict.setdefault().
+
+        Args:
+            key: (string) the name of the data to fetch/store.
+            default: default data to store and return if *key* doesn't exist or
+                doesn't have valid data. Defaults to None.
+            timeout: (int, long, float, or None) how long in seconds *default*
+                should be considered valid; if None, defaults to forever.
+
+        Returns:
+            the value of *key* if it exists and is valid; if not, then the
+                value of *default*.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+            pickle.PicklingError: an unpicklable object was passed.
+
+        """
+        data = self._read()
+        k = data[key] if key in data else None
+        if (k is not None and (k["expires"] is None or
+                (self._total_seconds((datetime.datetime.now() -
+                 k["expires"])) < 0))):
+            return k["data"]
+        else:
+            if timeout is None:
+                expires = None
+            else:
+                expires = (datetime.datetime.now() +
+                           datetime.timedelta(seconds=timeout))
+            data[key] = {"expires": expires, "data": default}
+            self._write(data)
+            return default
+
+    def get(self, key, override=False):
         """Get data from the cache.
 
         All data stored under *key* is returned. If the data is expired,
@@ -139,7 +183,6 @@ class Cache(object):
         Args:
             key: (string) the name of the data to fetch.
             override: (bool) return expired data; defaults to False.
-            default: a default value to return if key does not exist
 
         Returns:
             the requested data or None if the requested data has expired.
@@ -152,17 +195,12 @@ class Cache(object):
 
         """
         data = self._read()
-        try:
-            if (data[key]["expires"] is None or
-                    (self._total_seconds((datetime.datetime.now() -
-                     data[key]["expires"])) < 0) or override):
-                return data[key]["data"]
-            else:
-                return None
-        except KeyError:
-            if default is not None:
-                return default
-            raise
+        if (data[key]["expires"] is None or
+                (self._total_seconds((datetime.datetime.now() -
+                 data[key]["expires"])) < 0) or override):
+            return data[key]["data"]
+        else:
+            return None
 
     def invalidate(self, key=None):
         """Force data to expire.
