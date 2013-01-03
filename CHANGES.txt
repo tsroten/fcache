@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-v.0.3
------
+v.0.3 (2013-01-03)
+------------------
 
 * now supports Python 2.6, 2.7, and 3.
 * added :meth:`~fcache.Cache.set_default` method.
