@@ -1,3 +1,4 @@
+import datetime
 import os
 import time
 import unittest
@@ -29,7 +30,7 @@ class testCache(unittest.TestCase):
         self.assertEqual(self.cache.set_default("n"), 43)
         self.assertEqual(self.cache.set_default("y", 2, .1), 2)
         self.assertEqual(self.cache.get("y"), 2)
-        time.sleep(.1)
+        time.sleep(0.1)
         self.assertEqual(self.cache.get("y"), None)
 
     def test_get(self):
@@ -41,6 +42,12 @@ class testCache(unittest.TestCase):
         self.assertRaises(KeyError, self.cache.get, "j")
         self.cache.delete()
         self.assertRaises(IOError, self.cache.get, "j")
+
+    def test_keys(self):
+        self.assertEqual(sorted(self.cache.keys()), ["n", "p", "timer"])
+        time.sleep(0.1)
+        self.assertEqual(sorted(self.cache.keys()), ["n", "p"])
+        self.assertEqual(sorted(self.cache.keys(True)), ["n", "p", "timer"])
 
     def test_invalidate(self):
         self.assertEqual(self.cache.get("n"), 43)
@@ -68,3 +75,19 @@ class testCache(unittest.TestCase):
         self.cache.delete()
         self.assertFalse(os.access(self.cache.filename, os.F_OK))
         self.assertRaises(OSError, self.cache.delete)
+
+
+class testHelpers(unittest.TestCase):
+
+    def setUp(self):
+        self.cache = fcache.Cache("unittest", "fcache")
+
+    def tearDown(self):
+        self.cache.delete()
+
+    def test_is_expired(self):
+        now = datetime.datetime.now()
+        j = {"expires": now, "data": None}
+        k = {"expires": now + datetime.timedelta(seconds=10), "data": None}
+        self.assertTrue(self.cache._is_expired(j))
+        self.assertFalse(self.cache._is_expired(k))

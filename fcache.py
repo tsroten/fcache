@@ -69,6 +69,7 @@ class Cache(object):
         set: store data in the cache.
         set_default: if valid data exists, get it; if not, store it.
         get: get data from the cache.
+        keys: return a list of the cache's keys.
         invalidate: force data to expire.
         remove: remove data from the cache.
         flush: clear all data from the cache.
@@ -160,9 +161,7 @@ class Cache(object):
         """
         data = self._read()
         k = data[key] if key in data else None
-        if (k is not None and (k["expires"] is None or
-                (self._total_seconds((datetime.datetime.now() -
-                 k["expires"])) < 0))):
+        if k is not None and not self._is_expired(k):
             return k["data"]
         else:
             if timeout is None:
@@ -195,12 +194,35 @@ class Cache(object):
 
         """
         data = self._read()
-        if (data[key]["expires"] is None or
-                (self._total_seconds((datetime.datetime.now() -
-                 data[key]["expires"])) < 0) or override):
+        if not self._is_expired(data[key]) or override:
             return data[key]["data"]
         else:
             return None
+
+    def keys(self, override=False):
+        """Return a list of the cache's keys.
+
+        By default, only keys that have valid data are returned. If *override*
+        is True, then all keys are returned.
+
+        Args:
+            override: (bool) return expired data's keys; defaults to False.
+
+        Returns:
+            a list of the cache's keys.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        result = []
+        for k in data.keys():
+            if not self._is_expired(data[k]) or override:
+                result.append(k)
+        return result
 
     def invalidate(self, key=None):
         """Force data to expire.
@@ -295,3 +317,13 @@ class Cache(object):
         """Calculate the number of seconds in a timedelta object."""
         return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
                 10**6)
+
+    def _is_expired(self, data):
+        """Find out if the passed data is expired or not."""
+        if data["expires"] is None:
+            return False
+        elif self._total_seconds((datetime.datetime.now() -
+                                  data["expires"])) < 0:
+            return False
+        else:
+            return True
