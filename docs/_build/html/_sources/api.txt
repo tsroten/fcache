@@ -21,7 +21,7 @@ API
 
     .. attribute:: cachedir
 
-        The cache's parent directory, as determined by :meth:`appdirs.user_cache_dir`. This attribute's value should not be changed unless you have good reason to do so.
+        The cache file's parent directory, as determined by :meth:`appdirs.user_cache_dir`. This attribute's value should not be changed unless you have good reason to do so.
 
     .. attribute:: filename
 

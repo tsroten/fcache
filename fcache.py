@@ -59,9 +59,9 @@ class Cache(object):
         '9729825'. Next, it prints the value of 'chicago'.
 
     Attributes:
-        cachename: the cache's name, as passed to the Cache constructor.
-        cachedir: the cache's parent directory, as determined by
+        cachedir: the cache file's parent directory, as determined by
             appdirs.user_cache_dir().
+        cachename: the cache's name, as passed to the Cache constructor.
         filename: the cache's filename. It is formed by passing cachename to
             hashlib's sha1() constructor.
 
