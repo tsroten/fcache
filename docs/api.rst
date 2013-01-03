@@ -39,7 +39,7 @@ API
         :raises pickle.PicklingError: an `unpicklable object <http://docs.python.org/2.7/library/pickle.html#what-can-be-pickled-and-unpickled>`_ was passed.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
-    .. method:: set_default(key[, default=None, timeout=None):
+    .. method:: set_default(key[, default=None, timeout=None)
 
         If *key* exists, return its value; if not, create *key*.
 
