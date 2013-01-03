@@ -85,6 +85,18 @@ API
 
         .. versionadded:: 0.3
 
+    .. method:: values([override=False])
+
+        Return a list of the cache's values. By default, only values that are not expired are returned. If *override* is :data:`True`, then all values are returned.
+
+        :param override: return expired data; defaults to :data:`False`.
+        :type override: :func:`bool<bool>`
+        :returns: a :func:`list<list>` of the cache's values.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+        :raises pickle.UnpicklingError: there was a problem unpickling an object.
+
+        .. versionadded:: 0.3
+
     .. method:: invalidate(key=None)
 
         Force data to expire. After forcing *key* to expire, calling :meth:`~fcache.Cache.get` on *key* will return :data:`None`.

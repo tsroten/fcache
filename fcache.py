@@ -70,6 +70,7 @@ class Cache(object):
         set_default: if valid data exists, get it; if not, store it.
         get: get data from the cache.
         keys: return a list of the cache's keys.
+        values: return a list of the cache's values.
         invalidate: force data to expire.
         remove: remove data from the cache.
         flush: clear all data from the cache.
@@ -222,6 +223,31 @@ class Cache(object):
         for k in data.keys():
             if not self._is_expired(data[k]) or override:
                 result.append(k)
+        return result
+
+    def values(self, override=False):
+        """Return a list of the cache's values.
+
+        By default, only values that are not expired are returned. If
+        *override* is True, then all values are returned.
+
+        Args:
+            override: (bool) return expired data; defaults to False.
+
+        Returns:
+            a list of the cache's values.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        result = []
+        for v in data.values():
+            if not self._is_expired(v) or override:
+                result.append(v["data"])
         return result
 
     def invalidate(self, key=None):

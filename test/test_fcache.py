@@ -49,6 +49,12 @@ class testCache(unittest.TestCase):
         self.assertEqual(sorted(self.cache.keys()), ["n", "p"])
         self.assertEqual(sorted(self.cache.keys(True)), ["n", "p", "timer"])
 
+    def test_values(self):
+        self.assertEqual(sorted(self.cache.values()), [1, 2, 43])
+        time.sleep(0.1)
+        self.assertEqual(sorted(self.cache.values()), [2, 43])
+        self.assertEqual(sorted(self.cache.values(True)), [1, 2, 43])
+
     def test_invalidate(self):
         self.assertEqual(self.cache.get("n"), 43)
         self.cache.invalidate("n")
