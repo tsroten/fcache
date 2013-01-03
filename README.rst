@@ -61,7 +61,7 @@ Just like an orange, some data goes bad after awhile. fcache can keep track of w
 Documentation
 -------------
 
-`fcache's documentation <http://tsroten.github.com/fcache/>`_ contains an introduction along with an API overview. For more information on how to get started with fcache, be sure to read the documentation.
+`fcache's documentation <https://fcache.readthedocs.org/>`_ contains an introduction along with an API overview. For more information on how to get started with fcache, be sure to read the documentation.
 
 Bug/Issues Tracker
 ------------------
