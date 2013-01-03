@@ -10,7 +10,7 @@ class testCache(unittest.TestCase):
     def setUp(self):
         self.cache = fcache.Cache("unittest", "fcache")
         self.cache.set("n", 43)
-        self.cache.set("timer", 1, 1)
+        self.cache.set("timer", 1, 0.1)
 
     def tearDown(self):
         if os.access(self.cache.filename, os.F_OK) is True:
@@ -27,7 +27,7 @@ class testCache(unittest.TestCase):
     def test_get(self):
         self.assertEqual(self.cache.get("n"), 43)
         self.assertEqual(self.cache.get("timer"), 1)
-        time.sleep(1)
+        time.sleep(0.1)
         self.assertEqual(self.cache.get("timer"), None)
         self.assertEqual(self.cache.get("timer", True), 1)
         self.assertRaises(KeyError, self.cache.get, "j")
