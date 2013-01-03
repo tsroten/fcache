@@ -98,7 +98,7 @@ class Cache(object):
         self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
                                      hashlib.sha1(self.cachename).hexdigest())
-        if os.access(self.filename, os.F_OK) is False:
+        if not os.access(self.filename, os.F_OK):
             self._create()
             self.flush()
 
@@ -153,8 +153,7 @@ class Cache(object):
         data = self._read()
         if (data[key]["expires"] is None or
                 (self._total_seconds((datetime.datetime.now() -
-                 data[key]["expires"])) < 0) or
-                override is True):
+                 data[key]["expires"])) < 0) or override):
             return data[key]["data"]
         else:
             return None
@@ -205,7 +204,7 @@ class Cache(object):
             exceptions.IOError: the cache file does not exist.
 
         """
-        if os.access(self.filename, os.F_OK) is False:
+        if not os.access(self.filename, os.F_OK):
             raise IOError("the following cache file does not exist: %s"
                           % self.filename)
         else:
@@ -225,7 +224,7 @@ class Cache(object):
 
     def _create(self):
         """Create a cache file."""
-        if os.access(self.cachedir, os.F_OK) is False:
+        if not os.access(self.cachedir, os.F_OK):
             os.makedirs(self.cachedir)
         f, tmp = tempfile.mkstemp(dir=self.cachedir)
         os.rename(tmp, self.filename)
