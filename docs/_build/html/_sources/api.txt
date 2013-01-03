@@ -132,6 +132,7 @@ API
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
         :raises pickle.UnpicklingError: there was a problem unpickling an object.
         :raises pickle.PicklingError: an unpicklable object was passed.
+
         .. versionadded:: 0.3
 
     .. method:: values([override=False])

@@ -5,7 +5,7 @@ with open("README.rst") as f:
 
 setup(
     name = "fcache",
-    version = "0.3dev",
+    version = "0.3",
     author = "Thomas Roten",
     author_email = "thomas@roten.us",
     url = "https://github.com/tsroten/fcache",
