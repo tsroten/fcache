@@ -250,6 +250,31 @@ class Cache(object):
                 result.append(v["data"])
         return result
 
+    def items(self, override=False):
+        """Return a list of the cache's keys and values.
+
+        By default, only keys and values of non-expired data are returned.
+        If *override* is True, then all keys and values are returned.
+
+        Args:
+            override: (bool) return expired keys and values; defaults to False.
+        
+        Returns:
+            a list of the cache keys/values, where each pair is a tuple.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        result = []
+        for k, v in data.items():
+            if not self._is_expired(v) or override:
+                result.append((k, v["data"]))
+        return result
+
     def invalidate(self, key=None):
         """Force data to expire.
 
