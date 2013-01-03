@@ -130,7 +130,7 @@ class Cache(object):
         data[key] = {"expires": expires, "data": value}
         self._write(data)
 
-    def get(self, key, override=False):
+    def get(self, key, override=False, default=None):
         """Get data from the cache.
 
         All data stored under *key* is returned. If the data is expired,
@@ -139,6 +139,7 @@ class Cache(object):
         Args:
             key: (string) the name of the data to fetch.
             override: (bool) return expired data; defaults to False.
+            default: a default value to return if key does not exist
 
         Returns:
             the requested data or None if the requested data has expired.
@@ -151,12 +152,17 @@ class Cache(object):
 
         """
         data = self._read()
-        if (data[key]["expires"] is None or
-                (self._total_seconds((datetime.datetime.now() -
-                 data[key]["expires"])) < 0) or override):
-            return data[key]["data"]
-        else:
-            return None
+        try:
+            if (data[key]["expires"] is None or
+                    (self._total_seconds((datetime.datetime.now() -
+                     data[key]["expires"])) < 0) or override):
+                return data[key]["data"]
+            else:
+                return None
+        except KeyError:
+            if default is not None:
+                return default
+            raise
 
     def invalidate(self, key):
         """Force data to expire.

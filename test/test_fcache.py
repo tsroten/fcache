@@ -31,6 +31,7 @@ class testCache(unittest.TestCase):
         self.assertEqual(self.cache.get("timer"), None)
         self.assertEqual(self.cache.get("timer", True), 1)
         self.assertRaises(KeyError, self.cache.get, "j")
+        self.assertEqual(self.cache.get("j", default="k"), "k")
         self.cache.delete()
         self.assertRaises(IOError, self.cache.get, "j")
 
