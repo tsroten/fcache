@@ -1,11 +1,15 @@
-from distutils.core import setup
+import distribute_setup
+distribute_setup.use_setuptools()
+
+#from distutils.core import setup
+from setuptools import setup, find_packages
 
 with open("README.rst") as f:
     long_description = f.read()
 
 setup(
     name = "fcache",
-    version = "0.2.1",
+    version = "0.3dev",
     author = "Thomas Roten",
     author_email = "thomas@roten.us",
     url = "https://github.com/tsroten/fcache",
@@ -21,7 +25,8 @@ setup(
         "Intended Audience :: Developers",
         ],
     keywords = ["cache", "file"],
-    py_modules = ["fcache"],
+    packages = find_packages(),
+#    py_modules = ["fcache"],
     test_suite = "test",
     install_requires = "appdirs",
 )
