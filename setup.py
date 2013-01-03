@@ -1,8 +1,4 @@
-import distribute_setup
-distribute_setup.use_setuptools()
-
-#from distutils.core import setup
-from setuptools import setup, find_packages
+from distutils.core import setup
 
 with open("README.rst") as f:
     long_description = f.read()
@@ -25,8 +21,5 @@ setup(
         "Intended Audience :: Developers",
         ],
     keywords = ["cache", "file"],
-    packages = find_packages(),
-#    py_modules = ["fcache"],
-    test_suite = "test",
-    install_requires = "appdirs",
+    py_modules = ["fcache"],
 )
