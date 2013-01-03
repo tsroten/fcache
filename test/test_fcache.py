@@ -10,6 +10,7 @@ class testCache(unittest.TestCase):
     def setUp(self):
         self.cache = fcache.Cache("unittest", "fcache")
         self.cache.set("n", 43)
+        self.cache.set("p", 2)
         self.cache.set("timer", 1, 0.1)
 
     def tearDown(self):
@@ -39,6 +40,9 @@ class testCache(unittest.TestCase):
         self.assertEqual(self.cache.get("n"), 43)
         self.cache.invalidate("n")
         self.assertEqual(self.cache.get("n"), None)
+        self.assertEqual(self.cache.get("p"), 2)
+        self.cache.invalidate()
+        self.assertEqual(self.cache.get("p"), None)
         self.assertRaises(KeyError, self.cache.invalidate, "j")
         self.cache.delete()
         self.assertRaises(IOError, self.cache.invalidate, "n")

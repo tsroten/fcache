@@ -164,14 +164,17 @@ class Cache(object):
                 return default
             raise
 
-    def invalidate(self, key):
+    def invalidate(self, key=None):
         """Force data to expire.
 
         After forcing *key* to expire, calling get() on *key* will return
             None.
 
+        If *key* is None, then all data is forced to expire.
+
         Args:
-            key: (string) the name of the data to invalidate.
+            key: (string or None) the name of the data to invalidate; if None,
+                defaults to all data.
 
         Raises:
             exceptions.KeyError: *key* was not found.
@@ -180,7 +183,12 @@ class Cache(object):
 
         """
         data = self._read()
-        data[key]["expires"] = datetime.datetime.now()
+        now = datetime.datetime.now()
+        if key is None:
+            for k in data.keys():
+                data[k]["expires"] = now
+        else:
+            data[key]["expires"] = now
         self._write(data)
 
     def remove(self, key):
