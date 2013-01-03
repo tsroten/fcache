@@ -25,7 +25,10 @@ Classes:
 
 """
 
-import cPickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 import datetime
 import hashlib
 import os
@@ -38,7 +41,7 @@ class Cache(object):
 
     """A cache that stores its data on the file system.
 
-    It uses cPickle to store objects into cache file. It uses appdirs to ensure
+    It uses pickle to store objects into cache file. It uses appdirs to ensure
     that cache files are stored in platform-appropriate, application-specific
     cache directories. Cached data can optionally expire after a certain amount
     of time.
@@ -91,10 +94,10 @@ class Cache(object):
         """
         if appauthor is None or appauthor == "":
             appauthor = appname
-        self.cachename = cachename
+        self.cachename = cachename.encode('utf-8')
         self.cachedir = appdirs.user_cache_dir(appname, appauthor)
         self.filename = os.path.join(self.cachedir,
-                                     hashlib.sha1(cachename).hexdigest())
+                                     hashlib.sha1(self.cachename).hexdigest())
         if os.access(self.filename, os.F_OK) is False:
             self._create()
             self.flush()
@@ -149,8 +152,8 @@ class Cache(object):
         """
         data = self._read()
         if (data[key]["expires"] is None or
-                ((datetime.datetime.now() -
-                  data[key]["expires"]).total_seconds() < 0) or
+                (self._total_seconds((datetime.datetime.now() -
+                 data[key]["expires"])) < 0) or
                 override is True):
             return data[key]["data"]
         else:
@@ -228,11 +231,16 @@ class Cache(object):
         os.rename(tmp, self.filename)
 
     def _read(self):
-        """Open a file and use cPickle to retrieve its data"""
+        """Open a file and use pickle to retrieve its data"""
         with open(self.filename, "rb") as f:
-            return cPickle.load(f)
+            return pickle.load(f)
 
     def _write(self, data):
-        """Open a file and use cPickle to save data to it"""
+        """Open a file and use pickle to save data to it"""
         with open(self.filename, "wb") as f:
-            cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+    def _total_seconds(self, td):
+        """Calculate the number of seconds in a timedelta object."""
+        return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
+                10**6)
