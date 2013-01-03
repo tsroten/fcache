@@ -71,6 +71,8 @@ API
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
         :raises pickle.UnpicklingError: there was a problem unpickling an object.
 
+        .. versionchanged:: 0.2 Added the *override* argument.
+
     .. method:: invalidate(key=None)
 
         Force data to expire. After forcing *key* to expire, calling :meth:`~fcache.Cache.get` on *key* will return :data:`None`.
