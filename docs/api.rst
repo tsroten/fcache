@@ -82,6 +82,8 @@ API
         :raises exceptions.KeyError: *key* was not found.
         :raises exceptions.IOError: the cache file does not exist or cannot be read.
 
+        .. versionchanged:: 0.3 If *key* is :data:`None`, then all data is forced to expire.
+
     .. method:: remove(key)
 
         Remove data from the cache. All data stored under *key* is deleted from the cache.
