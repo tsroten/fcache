@@ -66,15 +66,16 @@ class Cache(object):
             hashlib's sha1() constructor.
 
     Methods:
+        delete: delete the cache file.
+        flush: clear all data from the cache.
+        get: get data from the cache.
+        invalidate: force data to expire.
+        items: return a list of the cache's keys and values.
+        keys: return a list of the cache's keys.
+        remove: remove data from the cache.
         set: store data in the cache.
         set_default: if valid data exists, get it; if not, store it.
-        get: get data from the cache.
-        keys: return a list of the cache's keys.
         values: return a list of the cache's values.
-        invalidate: force data to expire.
-        remove: remove data from the cache.
-        flush: clear all data from the cache.
-        delete: delete the cache file.
 
     """
 
@@ -104,6 +105,154 @@ class Cache(object):
         if not os.access(self.filename, os.F_OK):
             self._create()
             self.flush()
+
+    def delete(self):
+        """Delete the cache file.
+
+        On Windows, if the file is in use by another application, an exception
+        is raised. See os.remove() for more information.
+
+        Raises:
+            exceptions.OSError: the cache file does not exist.
+
+        """
+        os.remove(self.filename)
+
+    def flush(self):
+        """Clear all data in the cache.
+
+        This removes all key/value pairs from the cache.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist.
+
+        """
+        if not os.access(self.filename, os.F_OK):
+            raise IOError("the following cache file does not exist: %s"
+                          % self.filename)
+        else:
+            self._write({})
+
+    def get(self, key, override=False):
+        """Get data from the cache.
+
+        All data stored under *key* is returned. If the data is expired,
+        None is returned. Expired data is returned if *override* is True.
+
+        Args:
+            key: (string) the name of the data to fetch.
+            override: (bool) return expired data; defaults to False.
+
+        Returns:
+            the requested data or None if the requested data has expired.
+
+        Raises:
+            exceptions.KeyError: *key* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        if not self._is_expired(data[key]) or override:
+            return data[key]["data"]
+        else:
+            return None
+
+    def invalidate(self, key=None):
+        """Force data to expire.
+
+        After forcing *key* to expire, calling get() on *key* will return
+            None.
+
+        If *key* is None, then all data is forced to expire.
+
+        Args:
+            key: (string or None) the name of the data to invalidate; if None,
+                defaults to all data.
+
+        Raises:
+            exceptions.KeyError: *key* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+
+        """
+        data = self._read()
+        now = datetime.datetime.now()
+        if key is None:
+            for k in data.keys():
+                data[k]["expires"] = now
+        else:
+            data[key]["expires"] = now
+        self._write(data)
+
+    def items(self, override=False):
+        """Return a list of the cache's keys and values.
+
+        By default, only keys and values of non-expired data are returned.
+        If *override* is True, then all keys and values are returned.
+
+        Args:
+            override: (bool) return expired keys and values; defaults to False.
+        
+        Returns:
+            a list of the cache keys/values, where each pair is a tuple.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        result = []
+        for k, v in data.items():
+            if not self._is_expired(v) or override:
+                result.append((k, v["data"]))
+        return result
+
+    def keys(self, override=False):
+        """Return a list of the cache's keys.
+
+        By default, only keys that have valid data are returned. If *override*
+        is True, then all keys are returned.
+
+        Args:
+            override: (bool) return expired data's keys; defaults to False.
+
+        Returns:
+            a list of the cache's keys.
+
+        Raises:
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+            pickle.UnpicklingError: there was a problem unpickling an object.
+
+        """
+        data = self._read()
+        result = []
+        for k in data.keys():
+            if not self._is_expired(data[k]) or override:
+                result.append(k)
+        return result
+
+    def remove(self, key):
+        """Remove data from the cache.
+
+        All data stored under *key* is deleted from the cache.
+
+        Args:
+            key: (string) the name of the data to remove.
+
+        Raises:
+            exceptions.KeyError: *key* was not found.
+            exceptions.IOError: the cache file does not exist or cannot be
+                read.
+
+        """
+        data = self._read()
+        del data[key]
+        self._write(data)
 
     def set(self, key, value, timeout=None):
         """Store data in the cache.
@@ -174,57 +323,6 @@ class Cache(object):
             self._write(data)
             return default
 
-    def get(self, key, override=False):
-        """Get data from the cache.
-
-        All data stored under *key* is returned. If the data is expired,
-        None is returned. Expired data is returned if *override* is True.
-
-        Args:
-            key: (string) the name of the data to fetch.
-            override: (bool) return expired data; defaults to False.
-
-        Returns:
-            the requested data or None if the requested data has expired.
-
-        Raises:
-            exceptions.KeyError: *key* was not found.
-            exceptions.IOError: the cache file does not exist or cannot be
-                read.
-            pickle.UnpicklingError: there was a problem unpickling an object.
-
-        """
-        data = self._read()
-        if not self._is_expired(data[key]) or override:
-            return data[key]["data"]
-        else:
-            return None
-
-    def keys(self, override=False):
-        """Return a list of the cache's keys.
-
-        By default, only keys that have valid data are returned. If *override*
-        is True, then all keys are returned.
-
-        Args:
-            override: (bool) return expired data's keys; defaults to False.
-
-        Returns:
-            a list of the cache's keys.
-
-        Raises:
-            exceptions.IOError: the cache file does not exist or cannot be
-                read.
-            pickle.UnpicklingError: there was a problem unpickling an object.
-
-        """
-        data = self._read()
-        result = []
-        for k in data.keys():
-            if not self._is_expired(data[k]) or override:
-                result.append(k)
-        return result
-
     def values(self, override=False):
         """Return a list of the cache's values.
 
@@ -250,124 +348,12 @@ class Cache(object):
                 result.append(v["data"])
         return result
 
-    def items(self, override=False):
-        """Return a list of the cache's keys and values.
-
-        By default, only keys and values of non-expired data are returned.
-        If *override* is True, then all keys and values are returned.
-
-        Args:
-            override: (bool) return expired keys and values; defaults to False.
-        
-        Returns:
-            a list of the cache keys/values, where each pair is a tuple.
-
-        Raises:
-            exceptions.IOError: the cache file does not exist or cannot be
-                read.
-            pickle.UnpicklingError: there was a problem unpickling an object.
-
-        """
-        data = self._read()
-        result = []
-        for k, v in data.items():
-            if not self._is_expired(v) or override:
-                result.append((k, v["data"]))
-        return result
-
-    def invalidate(self, key=None):
-        """Force data to expire.
-
-        After forcing *key* to expire, calling get() on *key* will return
-            None.
-
-        If *key* is None, then all data is forced to expire.
-
-        Args:
-            key: (string or None) the name of the data to invalidate; if None,
-                defaults to all data.
-
-        Raises:
-            exceptions.KeyError: *key* was not found.
-            exceptions.IOError: the cache file does not exist or cannot be
-                read.
-
-        """
-        data = self._read()
-        now = datetime.datetime.now()
-        if key is None:
-            for k in data.keys():
-                data[k]["expires"] = now
-        else:
-            data[key]["expires"] = now
-        self._write(data)
-
-    def remove(self, key):
-        """Remove data from the cache.
-
-        All data stored under *key* is deleted from the cache.
-
-        Args:
-            key: (string) the name of the data to remove.
-
-        Raises:
-            exceptions.KeyError: *key* was not found.
-            exceptions.IOError: the cache file does not exist or cannot be
-                read.
-
-        """
-        data = self._read()
-        del data[key]
-        self._write(data)
-
-    def flush(self):
-        """Clear all data in the cache.
-
-        This removes all key/value pairs from the cache.
-
-        Raises:
-            exceptions.IOError: the cache file does not exist.
-
-        """
-        if not os.access(self.filename, os.F_OK):
-            raise IOError("the following cache file does not exist: %s"
-                          % self.filename)
-        else:
-            self._write({})
-
-    def delete(self):
-        """Delete the cache file.
-
-        On Windows, if the file is in use by another application, an exception
-        is raised. See os.remove() for more information.
-
-        Raises:
-            exceptions.OSError: the cache file does not exist.
-
-        """
-        os.remove(self.filename)
-
     def _create(self):
         """Create a cache file."""
         if not os.access(self.cachedir, os.F_OK):
             os.makedirs(self.cachedir)
         f, tmp = tempfile.mkstemp(dir=self.cachedir)
         os.rename(tmp, self.filename)
-
-    def _read(self):
-        """Open a file and use pickle to retrieve its data"""
-        with open(self.filename, "rb") as f:
-            return pickle.load(f)
-
-    def _write(self, data):
-        """Open a file and use pickle to save data to it"""
-        with open(self.filename, "wb") as f:
-            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
-
-    def _total_seconds(self, td):
-        """Calculate the number of seconds in a timedelta object."""
-        return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
-                10**6)
 
     def _is_expired(self, data):
         """Find out if the passed data is expired or not."""
@@ -378,3 +364,18 @@ class Cache(object):
             return False
         else:
             return True
+
+    def _read(self):
+        """Open a file and use pickle to retrieve its data"""
+        with open(self.filename, "rb") as f:
+            return pickle.load(f)
+
+    def _total_seconds(self, td):
+        """Calculate the number of seconds in a timedelta object."""
+        return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
+                10**6)
+
+    def _write(self, data):
+        """Open a file and use pickle to save data to it"""
+        with open(self.filename, "wb") as f:
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)

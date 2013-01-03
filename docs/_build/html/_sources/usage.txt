@@ -65,7 +65,7 @@ Set Data to Expire After a Certain Time
     >>> print cache.get("norwegian")
     None
 
-Data can be set to expire after a certain amount of seconds. By setting data to expire in *30* seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as ``None``. We used the :func:`time.sleep` function to wait 30 seconds so that the data would expire.
+Data can be set to expire after a certain amount of seconds. By setting data to expire in *30* seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as ``None``. In this example, we used the :func:`time.sleep` function to wait 30 seconds so that the data would expire.
 
 Invalidate Data
 ---------------
@@ -93,7 +93,7 @@ Remove Data From the Cache
         if ((data[name]["expires"] is None) or
     KeyError: 'chinese'
 
-Data can be easily removed from a cache by calling the :meth:`~fcache.Cache.remove` method. If you try to retrieve a ``key`` that doesn't exist, a ``KeyError`` is raised.
+Data can be easily removed from a cache by calling the :meth:`~fcache.Cache.remove` method. If you try to retrieve a key that doesn't exist, :exc:`exceptions.KeyError` is raised.
 
 Cached Data is Persistent
 -------------------------

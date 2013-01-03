@@ -108,7 +108,7 @@
 <span class="go">None</span>
 </pre></div>
 </div>
-<p>Data can be set to expire after a certain amount of seconds. By setting data to expire in <em>30</em> seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as <tt class="docutils literal"><span class="pre">None</span></tt>. We used the <a class="reference external" href="http://docs.python.org/2.7/library/time.html#time.sleep" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">time.sleep()</span></tt></a> function to wait 30 seconds so that the data would expire.</p>
+<p>Data can be set to expire after a certain amount of seconds. By setting data to expire in <em>30</em> seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as <tt class="docutils literal"><span class="pre">None</span></tt>. In this example, we used the <a class="reference external" href="http://docs.python.org/2.7/library/time.html#time.sleep" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">time.sleep()</span></tt></a> function to wait 30 seconds so that the data would expire.</p>
 </div>
 <div class="section" id="invalidate-data">
 <h2>Invalidate Data<a class="headerlink" href="#invalidate-data" title="Permalink to this headline">¶</a></h2>
@@ -132,7 +132,7 @@
 <span class="gr">KeyError</span>: <span class="n">&#39;chinese&#39;</span>
 </pre></div>
 </div>
-<p>Data can be easily removed from a cache by calling the <a class="reference internal" href="api.html#fcache.Cache.remove" title="fcache.Cache.remove"><tt class="xref py py-meth docutils literal"><span class="pre">remove()</span></tt></a> method. If you try to retrieve a <tt class="docutils literal"><span class="pre">key</span></tt> that doesn&#8217;t exist, a <tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised.</p>
+<p>Data can be easily removed from a cache by calling the <a class="reference internal" href="api.html#fcache.Cache.remove" title="fcache.Cache.remove"><tt class="xref py py-meth docutils literal"><span class="pre">remove()</span></tt></a> method. If you try to retrieve a key that doesn&#8217;t exist, <a class="reference external" href="http://docs.python.org/2.7/library/exceptions.html#exceptions.KeyError" title="(in Python v2.7)"><tt class="xref py py-exc docutils literal"><span class="pre">exceptions.KeyError</span></tt></a> is raised.</p>
 </div>
 <div class="section" id="cached-data-is-persistent">
 <h2>Cached Data is Persistent<a class="headerlink" href="#cached-data-is-persistent" title="Permalink to this headline">¶</a></h2>

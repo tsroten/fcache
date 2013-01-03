@@ -15,17 +15,93 @@ API
     :param appauthor: the name of the application's author -- if :data:`None`, defaults to *appname*.
     :type appauthor: :mod:`string` or :data:`None`
 
-    .. attribute:: cachename
-        
-        The cache's name, as passed to the :class:`~fcache.Cache` constructor method. This attribute's value should not be changed unless you have good reason to do so.
-
     .. attribute:: cachedir
 
-        The cache file's parent directory, as determined by :meth:`appdirs.user_cache_dir`. This attribute's value should not be changed unless you have good reason to do so.
+        The cache file's parent directory, as determined by :meth:`appdirs.user_cache_dir`. Treat this attribute as read-only.
+
+    .. attribute:: cachename
+        
+        The cache's name, as passed to the :class:`~fcache.Cache` constructor method. Treat this attribute as read-only.
 
     .. attribute:: filename
 
-        The cache's filename. It's formed by passing :attr:`~fcache.Cache.cachename` to :mod:`hashlib`'s :meth:`sha1` constructor. This attribute's value should not be changed unless you have **good reason** to do so. Editing it, then getting/setting data will most likely result in errors or lost data.
+        The cache's filename. It's formed by passing :attr:`~fcache.Cache.cachename` to :mod:`hashlib`'s :meth:`sha1` constructor. Treat this attribute as read-only.
+
+    .. method:: delete()
+
+        Delete the cache file.
+
+        On Windows, if the file is in use by another application, an exception is raised. See :func:`os.remove` for more information.
+
+        :raises exceptions.OSError: the cache file does not exist.
+
+    .. method:: flush()
+
+        Clear all data from the cache. This removes all key/value pairs from the cache.
+
+        :raises exceptions.IOError: the cache file does not exist.
+
+    .. method:: get(key[, override=False])
+
+        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned. Expired data is returned if *override* is :data:`True`.
+
+        :param key: the name of the data to fetch.
+        :type key: :mod:`string`
+        :param override: return expired data; defaults to :data:`False`.
+        :type override: :func:`bool<bool>`
+        :returns: the requested data or :data:`None` if the requested data has expired.
+        :raises exceptions.KeyError: *key* was not found.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+        :raises pickle.UnpicklingError: there was a problem unpickling an object.
+
+        .. versionchanged:: 0.2 Added the *override* argument.
+
+    .. method:: invalidate([key=None])
+
+        Force data to expire. After forcing *key* to expire, calling :meth:`~fcache.Cache.get` on *key* will return :data:`None`.
+        
+        If *key* is :data:`None`, then all data is forced to expire.
+
+        :param key: the name of the data to invalidate; if :data:`None`, defaults to all data.
+        :type key: :mod:`string` or :data:`None`
+        :raises exceptions.KeyError: *key* was not found.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+
+        .. versionadded:: 0.2
+        .. versionchanged:: 0.3 If *key* is :data:`None`, then all data is forced to expire.
+
+    .. method:: items([override=False])
+
+        Return a list of the cache's keys and values. By default, only keys and values of non-expired data are returned. If *override* is :data:`True`, then all keys and values are returned.
+
+        :param override: return expired keys and values; defaults to :data:`False`.
+        :type override: :func:`bool<bool>`
+        :returns: a :func:`list<list>` of cache keys/values, where each pair is a :func:`tuple<tuple>`.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+        :raises pickle.UnpicklingError: there was a problem unpickling an object.
+
+        .. versionadded:: 0.3
+
+    .. method:: keys([override=False])
+
+        Return a list of the cache's keys. By default, only the keys that have valid data are returned. If *override* is :data:`True`, then all keys are returned.
+
+        :param override: return expired data's keys; defaults to :data:`False`.
+        :type override: :func:`bool<bool>`
+        :returns: a :func:`list<list>` of the cache's keys.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
+        :raises pickle.UnpicklingError: there was a problem unpickling an object.
+
+        .. versionadded:: 0.3
+
+    .. method:: remove(key)
+
+        Remove data from the cache. All data stored under *key* is deleted from the cache.
+
+        :param key: the name of the data to remove.
+        :type key: :mod:`string`
+        :raises exceptions.KeyError: *key* was not found.
+        :raises exceptions.IOError: the cache file does not exist or cannot be read.
      
     .. method:: set(key, value[, timeout=None])
 
@@ -58,33 +134,6 @@ API
         :raises pickle.PicklingError: an unpicklable object was passed.
         .. versionadded:: 0.3
 
-    .. method:: get(key[, override=False])
-
-        Get data from the cache. All data stored under the name, *key*, is returned. If the data is expired, ``None`` is returned. Expired data is returned if *override* is :data:`True`.
-
-        :param key: the name of the data to fetch.
-        :type key: :mod:`string`
-        :param override: return expired data; defaults to :data:`False`.
-        :type override: :func:`bool<bool>`
-        :returns: the requested data or :data:`None` if the requested data has expired.
-        :raises exceptions.KeyError: *key* was not found.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read.
-        :raises pickle.UnpicklingError: there was a problem unpickling an object.
-
-        .. versionchanged:: 0.2 Added the *override* argument.
-
-    .. method:: keys([override=False])
-
-        Return a list of the cache's keys. By default, only the keys that have valid data are returned. If *override* is :data:`True`, then all keys are returned.
-
-        :param override: return expired data's keys; defaults to :data:`False`.
-        :type override: :func:`bool<bool>`
-        :returns: a :func:`list<list>` of the cache's keys.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read.
-        :raises pickle.UnpicklingError: there was a problem unpickling an object.
-
-        .. versionadded:: 0.3
-
     .. method:: values([override=False])
 
         Return a list of the cache's values. By default, only values that are not expired are returned. If *override* is :data:`True`, then all values are returned.
@@ -96,52 +145,3 @@ API
         :raises pickle.UnpicklingError: there was a problem unpickling an object.
 
         .. versionadded:: 0.3
-
-    .. method:: items([override=False])
-
-        Return a list of the cache's keys and values. By default, only keys and values of non-expired data are returned. If *override* is :data:`True`, then all keys and values are returned.
-
-        :param override: return expired keys and values; defaults to :data:`False`.
-        :type override: :func:`bool<bool>`
-        :returns: a :func:`list<list>` of cache keys/values, where each pair is a :func:`tuple<tuple>`.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read.
-        :raises pickle.UnpicklingError: there was a problem unpickling an object.
-
-        .. versionadded:: 0.3
-
-    .. method:: invalidate(key=None)
-
-        Force data to expire. After forcing *key* to expire, calling :meth:`~fcache.Cache.get` on *key* will return :data:`None`.
-        
-        If *key* is :data:`None`, then all data is forced to expire.
-
-        :param key: the name of the data to invalidate; if :data:`None`, defaults to all data.
-        :type key: :mod:`string` or :data:`None`
-        :raises exceptions.KeyError: *key* was not found.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read.
-
-        .. versionadded:: 0.2
-        .. versionchanged:: 0.3 If *key* is :data:`None`, then all data is forced to expire.
-
-    .. method:: remove(key)
-
-        Remove data from the cache. All data stored under *key* is deleted from the cache.
-
-        :param key: the name of the data to remove.
-        :type key: :mod:`string`
-        :raises exceptions.KeyError: *key* was not found.
-        :raises exceptions.IOError: the cache file does not exist or cannot be read.
-
-    .. method:: flush()
-
-        Clear all data from the cache. This removes all key/value pairs from the cache.
-
-        :raises exceptions.IOError: the cache file does not exist.
-
-    .. method:: delete()
-
-        Delete the cache file.
-
-        On Windows, if the file is in use by another application, an exception is raised. See :func:`os.remove` for more information.
-
-        :raises exceptions.OSError: the cache file does not exist.
