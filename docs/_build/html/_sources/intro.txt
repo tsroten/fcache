@@ -8,7 +8,7 @@ Prerequisites
 
 :mod:`fcache` requires Python 2.6, 2.7, or 3 to run.
 
-It also uses the `appdirs module <http://pypi.python.org/pypi/appdirs>`_. :mod:`appdirs` is automatically installed using any of the installation methods listed below.
+It also requires the `appdirs module <http://pypi.python.org/pypi/appdirs>`_.
 
 Installation
 ------------
