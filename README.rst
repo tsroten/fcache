@@ -4,7 +4,7 @@ fcache
 About
 -----
 
-fcache is a simple, persistent, file-based cache module for Python. It uses :mod:`pickle` to store objects into a cache file and `appdirs <http://pypi.python.org/pypi/appdirs>`_ to ensure that cache files are stored in platform-appropriate, application-specific directories. It supports optional, time-based data expiration.
+fcache is a simple, persistent, file-based cache module for Python. It uses `pickle <http://docs.python.org/3/library/pickle.html>`_ to store objects into a cache file and `appdirs <http://pypi.python.org/pypi/appdirs>`_ to ensure that cache files are stored in platform-appropriate, application-specific directories. It supports optional, time-based data expiration.
 
 It's Simple
 -----------
