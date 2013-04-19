@@ -353,6 +353,7 @@ class Cache(object):
         if not os.access(self.cachedir, os.F_OK):
             os.makedirs(self.cachedir)
         f, tmp = tempfile.mkstemp(dir=self.cachedir)
+        os.close(f)
         os.rename(tmp, self.filename)
 
     def _is_expired(self, data):

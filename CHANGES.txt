@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+v.0.3.1 (2013-04-19)
+--------------------
+
+* bug fix: close temp file after creation (issue #1)
+
 v.0.3 (2013-01-03)
 ------------------
 
