@@ -1,0 +1,9 @@
+fcache todo:
+
+--0.4
+get - can request multiple pieces of data
+set - can store multiple key/value pairs at once
+remove built docs from MANIFEST.in
+look into locking the file from other application use
+examples dir with sample code
+link to appdirs??
