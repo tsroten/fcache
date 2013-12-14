@@ -51,7 +51,7 @@ class Cache(object):
         >>> import fcache
         >>> cache = fcache.Cache("population", "statistics-fetcher")
         >>> cache.set("chicago", 9729825)
-        >>> print cache.get("chicago")
+        >>> cache.get("chicago")
         9729825
 
         This code creates the cache 'population' for the application

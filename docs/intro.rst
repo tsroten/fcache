@@ -58,7 +58,7 @@ Basic Usage
     >>> import fcache
     >>> cache = fcache.Cache("population", "statistics-fetcher")
     >>> cache.set("chicago", 9729825)
-    >>> print cache.get("chicago")
+    >>> cache.get("chicago")
     9729825
 
 This code creates the cache ``population`` for the application ``statistics-fetcher``. Then, it sets the key ``chicago`` to the value ``9729825``. Next, it prints the value of ``chicago``.

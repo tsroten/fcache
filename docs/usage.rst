@@ -31,11 +31,11 @@ Get Data from the Cache
 
 .. code-block:: python
 
-    >>> print cache.get("english")
+    >>> print(cache.get("english"))
     Hello!
-    >>> print cache.get("spanish")
+    >>> print(cache.get("spanish"))
     ¡Hola!
-    >>> print cache.get("chinese")
+    >>> print(cache.get("chinese"))
     你好！
 
 By calling the method :meth:`~fcache.Cache.get`, you can retrieve the *value* of a *key*.
@@ -47,7 +47,7 @@ Store Other Types of Data
 
     >>> english_greetings = {"ordinary": "Hello!", "friendly": "Hey there!"}
     >>> cache.set("english", english_greetings)
-    >>> print cache.get("english")
+    >>> cache.get("english")
     {'ordinary': 'Hello!', 'friendly': 'Hey there!'}
 
 The data stored doesn't have to be a string. It can be any type that the :mod:`pickle`  module `supports <http://docs.python.org/2.7/library/pickle.html#what-can-be-pickled-and-unpickled>`_. In this case, we used a dictionary to store multiple English greetings.
@@ -58,11 +58,11 @@ Set Data to Expire After a Certain Time
 .. code-block:: python
 
     >>> cache.set("norwegian", "Hallo!", 30)
-    >>> print cache.get("norwegian")
+    >>> print(cache.get("norwegian"))
     Hallo!
     >>> import time
     >>> time.sleep(30)
-    >>> print cache.get("norwegian")
+    >>> cache.get("norwegian")
     None
 
 Data can be set to expire after a certain amount of seconds. By setting data to expire in *30* seconds, you can fetch the data anytime in the next 30 seconds; after that, the data will return as ``None``. In this example, we used the :func:`time.sleep` function to wait 30 seconds so that the data would expire.
@@ -72,10 +72,10 @@ Invalidate Data
 
 .. code-block:: python
 
-    >>> print cache.get("english")
+    >>> cache.get("english")
     {'ordinary': 'Hello!', 'friendly': 'Hey there!'}
     >>> cache.invalidate("english")
-    >>> print cache.get("english")
+    >>> cache.get("english")
     None
 
 Data can be forced to expire, even if it doesn't have an expiration time. Once data is invalidated, calling :meth:`~fcache.Cache.get` on its *key* will return :data:`None`.
@@ -104,7 +104,7 @@ Cached Data is Persistent
     $ python
     >>> import fcache
     >>> cache = fcache.Cache("hello", "hello_goodbye")
-    >>> print cache.get("spanish")
+    >>> print(cache.get("spanish"))
     ¡Hola!
 
 :mod:`fcache` provides persistent cache files. In other words, your cached data is saved even after you stop using it.
@@ -115,7 +115,7 @@ Clear Cached Data
 .. code-block:: python
 
     >>> cache.flush()
-    >>> print cache.get("spanish")
+    >>> cache.get("spanish")
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "/Users/tsr/.virtualenvs/fcache/lib/python2.7/site-packages/fcache-0.1-py2.7.egg/fcache.py", line 163, in get
