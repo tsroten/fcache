@@ -58,6 +58,15 @@ It's Time-Aware
 
 Just like an orange, some data goes bad after awhile. fcache can keep track of when data should expire.
 
+Install
+-------
+
+fcache supports Python 2.6, 2.7, and 3. To install, use pip:
+
+.. code:: bash
+
+    $ pip install fcache
+
 Documentation
 -------------
 

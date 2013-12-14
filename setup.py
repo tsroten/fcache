@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 with open("README.rst") as f:
     long_description = f.read()
@@ -25,4 +25,6 @@ setup(
         ],
     keywords = ["cache", "file"],
     py_modules = ["fcache"],
+    install_requires = ["appdirs"],
+    test_suite = "test",
 )
