@@ -194,7 +194,7 @@ class Cache(object):
 
         Args:
             override: (bool) return expired keys and values; defaults to False.
-        
+
         Returns:
             a list of the cache keys/values, where each pair is a tuple.
 
@@ -373,8 +373,8 @@ class Cache(object):
 
     def _total_seconds(self, td):
         """Calculate the number of seconds in a timedelta object."""
-        return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
-                10**6)
+        return (td.microseconds + (td.seconds + td.days * 24 * 3600) *
+                (10**6) / 10**6)
 
     def _write(self, data):
         """Open a file and use pickle to save data to it"""
