@@ -26,4 +26,5 @@ setup(
     keywords = ["cache", "file"],
     py_modules = ["fcache"],
     install_requires = ["appdirs"],
+    test_suite = "test",
 )
