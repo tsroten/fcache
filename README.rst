@@ -9,7 +9,7 @@ fcache is a simple, persistent, file-based cache module for Python. It uses `pic
 It's Simple
 -----------
 
-::
+.. code:: python
 
     >>> import fcache
     >>> cache = fcache.Cache("population", "statistics-fetcher")
@@ -22,7 +22,7 @@ Using fcache is as simple as creating a ``Cache`` object, setting data, and gett
 It's Persistent
 ---------------
 
-::
+.. code:: python
 
     >>> exit()
     $ python
@@ -36,7 +36,7 @@ Cached data doesn't disappear when you stop using a ``Cache`` object. When you c
 It's File-Based
 ---------------
 
-::
+.. code:: python
 
     >>> cache.filename
     '/Users/tsr/Library/Caches/statistics-fetcher/248081ecb337c85ec8e4330e6099625a'
@@ -46,7 +46,7 @@ Cached data is stored in a file, plain and simple. You can see it on the file sy
 It's Time-Aware
 ---------------
 
-::
+.. code:: python
 
     >>> import time
     >>> cache.set("chicago", 9729825, 30)
