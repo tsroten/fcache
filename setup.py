@@ -24,7 +24,6 @@ setup(
         'Programming Language :: Python :: 3',
         ],
     keywords=['cache', 'file'],
-    py_modules=['fcache'],
-    install_requires=['appdirs'],
-    test_suite='test',
+    packages=['fcache'],
+    test_suite='fcache.test',
 )

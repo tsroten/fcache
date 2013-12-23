@@ -1,67 +1,42 @@
 fcache
 ======
 
-About
------
-
-fcache is a simple, persistent, file-based cache module for Python. It uses `pickle <http://docs.python.org/3/library/pickle.html>`_ to store objects into a cache file and `appdirs <http://pypi.python.org/pypi/appdirs>`_ to ensure that cache files are stored in platform-appropriate, application-specific directories. It supports optional, time-based data expiration.
-
-It's Simple
------------
+fcache is an easy-to-use file cache module for Python. It allows you to
+interact with a filesystem cache like you would a dictionary. It also supports
+data expiration, cache size management, and Python shelves.
 
 .. code:: python
 
-    >>> import fcache
-    >>> cache = fcache.Cache("population", "statistics-fetcher")
-    >>> cache.set("chicago", 9729825)
-    >>> cache.get("chicago")
-    9729825
+    >>> # Works like a dictionary:
+    ... cache['foo'] = 'value'
+    >>> cache['foo']
+    'value'
 
-Using fcache is as simple as creating a ``Cache`` object, setting data, and getting data back.
+    >>> # Store almost any Python object:
+    ... cache['numbers'] = [1, 2, 3, 4, 5]
 
-It's Persistent
----------------
+    >>> # Set data to expire:
+    ... cache.set('chicago_weather', chicago_weather, 100)
+    >>> cache['chicago_weather']
+    '27 F, Partly Cloudy'
+    >>> # Wait 100 seconds, then try again
+    >>> cache['chicago_weather'] is None
+    True
 
-.. code:: python
-
-    >>> exit()
+    >>> # Data is persistent
+    ... exit()
     $ python
     >>> import fcache
-    >>> cache = fcache.Cache("population", "statistics-fetcher")
-    >>> cache.get("chicago")
-    9729825
-
-Cached data doesn't disappear when you stop using a ``Cache`` object. When you create a new object with the same arguments, your data is still there, just like you left it.
-
-It's File-Based
----------------
-
-.. code:: python
-
-    >>> cache.filename
-    '/Users/tsr/Library/Caches/statistics-fetcher/248081ecb337c85ec8e4330e6099625a'
-
-Cached data is stored in a file, plain and simple. You can see it on the file system. You can delete it, copy it, or write your own library to open it.
-
-It's Time-Aware
----------------
-
-.. code:: python
-
-    >>> import time
-    >>> cache.set("chicago", 9729825, 30)
-    >>> cache.get("chicago")
-    9729825
-    >>> time.sleep(30)
-    >>> cache.get("chicago")
-    None
-
-Just like an orange, some data goes bad after awhile. fcache can keep track of when data should expire.
+    >>> cache = fcache.open('my_cache')
+    >>> cache['foo']
+    'value'
 
 Install
 -------
 
-fcache supports Python 2.6, 2.7, and 3. fcache requires the appdirs package. To install fcache, use pip:
+fcache supports Python 2.6, 2.7, and 3.
+
+To install, use pip:
 
 .. code:: bash
 
