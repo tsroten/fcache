@@ -25,8 +25,10 @@ class FileCache(MutableMapping):
     the optional *flag* argument.
 
     .. NOTE::
-        Keys and values are always stored as bytes. Keys are implicitly
-        encoded to bytes before storage.
+        Keys and values are always stored as :class:`bytes` objects. If data
+        serialization is enabled, keys are returned as a :class:`bytes`
+        object. If data serialization is disabled, keys are returned as a
+        :class:`str` object.
 
     """
 
@@ -122,9 +124,10 @@ class FileCache(MutableMapping):
         raise ValueError("invalid operation on closed cache")
 
     def _encode_key(self, key):
-        """Encode key using hex_codec for constructing a cache filename.
+        """Encode key using *hex_codec* for constructing a cache filename.
 
-        Keys are implicitly converted to bytes if passed as str.
+        Keys are implicitly converted to :class:`bytes` if passed as
+        :class:`str`.
 
         """
         if isinstance(key, str):
@@ -134,8 +137,14 @@ class FileCache(MutableMapping):
         return codecs.encode(key, 'hex_codec').decode(self._keyencoding)
 
     def _decode_key(self, key):
-        """Decode key using hex_codec to retrieve the original key."""
-        return codecs.decode(key.encode(self._keyencoding), 'hex_codec')
+        """Decode key using hex_codec to retrieve the original key.
+
+        Keys are returned as :class:`str` if serialization is enabled.
+        Keys are returned as :class:`bytes` if serialization is disabled.
+
+        """
+        bkey = codecs.decode(key.encode(self._keyencoding), 'hex_codec')
+        return bkey.decode(self._keyencoding) if self._serialize else bkey
 
     def _dumps(self, value):
         return value if not self._serialize else pickle.dumps(value)
@@ -148,7 +157,7 @@ class FileCache(MutableMapping):
         return os.path.join(self.cache_dir, key)
 
     def _filename_to_key(self, absfilename):
-        """Convert an absolute cache filename to an encoded key name."""
+        """Convert an absolute cache filename to a key name."""
         return os.path.split(absfilename)[1]
 
     def _all_filenames(self):

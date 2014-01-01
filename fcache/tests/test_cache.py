@@ -114,8 +114,10 @@ class TestFileCache(unittest.TestCase):
         bkey = skey.encode('utf-8')
         self.assertEqual(self.cache._encode_key(bkey), skey_hex)
         self.assertEqual(self.cache._encode_key(skey), skey_hex)
-        self.assertEqual(self.cache._decode_key(skey_hex), bkey)
+        self.assertEqual(self.cache._decode_key(skey_hex), skey)
         self.assertRaises(TypeError, self.cache._encode_key, 1)
+        self.cache._serialize = False
+        self.assertEqual(self.cache._decode_key(skey_hex), bkey)
 
     def test_delitem(self):
         self.cache['a'] = b'1'
