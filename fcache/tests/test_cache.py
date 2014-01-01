@@ -1,4 +1,5 @@
 import os
+import shelve
 import sys
 import unittest
 
@@ -10,14 +11,14 @@ else:
     FileNotFoundError = IOError
     UnsupportedOperation = IOError
 
-import fcache.cache as fcache
+import fcache.cache
 
 
 class TestFileCache(unittest.TestCase):
 
     def setUp(self):
         self.cache_dir = 'test_cache'
-        self.cache = fcache.FileCache(self.cache_dir)
+        self.cache = fcache.cache.FileCache(self.cache_dir)
 
     def tearDown(self):
         try:
@@ -34,14 +35,16 @@ class TestFileCache(unittest.TestCase):
         self.assertEqual(self.cache._buffer, {})
         self.assertEqual(self.cache._mode, 0o666)
         self.cache.close()
-        self.cache = fcache.FileCache(self.cache_dir, flag='ws')
+        self.cache = fcache.cache.FileCache(self.cache_dir, flag='ws')
         self.assertTrue(self.cache._sync)
         self.assertFalse(hasattr(self.cache, '_buffer'))
 
         # test flag validation
-        self.assertRaises(TypeError, fcache.FileCache, self.cache_dir, 1)
-        self.assertRaises(ValueError, fcache.FileCache, self.cache_dir, 'z')
-        self.assertRaises(ValueError, fcache.FileCache, self.cache_dir, 'rz')
+        self.assertRaises(TypeError, fcache.cache.FileCache, self.cache_dir, 1)
+        self.assertRaises(ValueError, fcache.cache.FileCache, self.cache_dir,
+                          'z')
+        self.assertRaises(ValueError, fcache.cache.FileCache, self.cache_dir,
+                          'rz')
 
     def test_delete_create(self):
         self.assertTrue(os.path.exists(self.cache_dir))
@@ -71,7 +74,7 @@ class TestFileCache(unittest.TestCase):
             self.cache._encode_key('foo'))))
         self.assertFalse(self.cache._encode_key('foo') in self.cache._buffer)
         self.cache.clear()
-        self.cache = fcache.FileCache(self.cache_dir, flag='cs')
+        self.cache = fcache.cache.FileCache(self.cache_dir, flag='cs')
         self.cache['foo'] = b'value'
         self.assertTrue(os.path.exists(self.cache._key_to_filename(
             self.cache._encode_key('foo'))))
@@ -98,16 +101,16 @@ class TestFileCache(unittest.TestCase):
 
     def test_flag(self):
         self.cache.delete()
-        self.assertRaises(FileNotFoundError, fcache.FileCache,
+        self.assertRaises(FileNotFoundError, fcache.cache.FileCache,
                           self.cache_dir, flag='r')
-        self.assertRaises(FileNotFoundError, fcache.FileCache,
+        self.assertRaises(FileNotFoundError, fcache.cache.FileCache,
                           self.cache_dir, flag='w')
-        self.cache = fcache.FileCache(self.cache_dir, flag='ns')
+        self.cache = fcache.cache.FileCache(self.cache_dir, flag='ns')
         self.assertTrue(os.path.exists(self.cache_dir))
         self.cache['foo'] = b'value'
-        self.cache = fcache.FileCache(self.cache_dir, flag='n')
+        self.cache = fcache.cache.FileCache(self.cache_dir, flag='n')
         self.assertEqual(len(self.cache), 0)
-        self.cache = fcache.FileCache(self.cache_dir, flag='rs')
+        self.cache = fcache.cache.FileCache(self.cache_dir, flag='rs')
         self.assertRaises(UnsupportedOperation, self.cache.__setitem__,
                           'foo', b'value')
 
@@ -125,6 +128,29 @@ class TestFileCache(unittest.TestCase):
         self.assertEqual(self.cache['a'], b'1')
         del self.cache['a']
         self.assertFalse('a' in self.cache)
+
+
+class TestShelfCache(unittest.TestCase):
+
+    def setUp(self):
+        self.cache_dir = 'test_cache'
+        self.cache = shelve.Shelf(fcache.cache.FileCache(self.cache_dir,
+                                  flag='cs', serialize=False))
+
+    def tearDown(self):
+        try:
+            self.cache.dict.delete()
+        except (ValueError, FileNotFoundError, OSError):
+            pass
+
+    def test_dump(self):
+        self.cache['foo'] = [1, 2, 3, 4, 5]
+        self.assertEqual(self.cache['foo'], [1, 2, 3, 4, 5])
+        self.cache._sync = False
+        self.cache._buffer = {}
+        self.cache['bar'] = [1, 2, 3, 4, 5]
+        self.cache.sync()
+        self.assertEqual(self.cache['bar'], [1, 2, 3, 4, 5])
 
 
 if __name__ == '__main__':
