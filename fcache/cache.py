@@ -17,10 +17,6 @@ from .posixemulation import rename
 logger = logging.getLogger(__name__)
 
 
-def _closed():
-    raise ValueError("invalid operation on closed cache")
-
-
 class FileCache(MutableMapping):
     """A persistent file cache that is dictionary-like and has a write buffer.
 
@@ -104,11 +100,11 @@ class FileCache(MutableMapping):
     def close(self):
         """Sync the write buffer, then close the cache."""
         self.sync()
-        self._flag = self._mode = self._keyencoding = None
-        self.cache_dir = self._sync = self._buffer = None
-        self.delete = self.sync = self.clear = self.create = _closed
-        self.__delitem__ = self.__getitem__ = self.__setitem__ = _closed
-        self.__iter__ = self.__len__ = self.__contains__ = _closed
+        self.sync = self.create = self.delete = self._closed
+        self._write_to_file = self._read_to_file = self._closed
+        self._key_to_filename = self._filename_to_key = self._closed
+        self.__getitem__ = self.__setitem__ = self.__delitem__ = self._closed
+        self.__iter__ = self.__len__ = self.__contains__ = self._closed
 
     def sync(self):
         """Sync the write buffer with the cache files."""
@@ -120,6 +116,10 @@ class FileCache(MutableMapping):
             self._write_to_file(filename, self._buffer[ekey])
         self._buffer.clear()
         self._sync = False
+
+    def _closed(self, *args, **kwargs):
+        """Filler method for closed cache methods."""
+        raise ValueError("invalid operation on closed cache")
 
     def _encode_key(self, key):
         """Encode key using hex_codec for constructing a cache filename.
@@ -225,8 +225,3 @@ class FileCache(MutableMapping):
     def __contains__(self, key):
         ekey = self._encode_key(key)
         return ekey in self._all_keys()
-
-    def __del__(self):
-        if not hasattr(self, '_buffer') or self._sync is None:
-            return  # cache is deleted or cache is closed, so don't sync
-        self.sync()

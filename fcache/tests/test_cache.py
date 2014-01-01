@@ -92,12 +92,6 @@ class TestFileCache(unittest.TestCase):
         self.assertRaises(ValueError, self.cache.__getitem__)
         self.assertRaises(ValueError, self.cache.__setitem__)
         self.assertRaises(ValueError, self.cache.__delitem__)
-        self.assertEqual(self.cache._flag, None)
-        self.assertEqual(self.cache._mode, None)
-        self.assertEqual(self.cache._keyencoding, None)
-        self.assertEqual(self.cache.cache_dir, None)
-        self.assertEqual(self.cache._sync, None)
-        self.assertEqual(self.cache._buffer, None)
 
     def test_flag(self):
         self.cache.delete()
