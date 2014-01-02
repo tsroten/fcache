@@ -1,6 +1,11 @@
 Change Log
 ----------
 
+v.0.4 (2014-01-02)
+~~~~~~~~~~~~~~~~~~
+
+* backwards-incompatible rewrite; fcache now emulates a :class:`dict`.
+
 v.0.3.1 (2013-04-19)
 ~~~~~~~~~~~~~~~~~~~~
 
