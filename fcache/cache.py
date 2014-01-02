@@ -30,30 +30,41 @@ class FileCache(MutableMapping):
         object. If data serialization is disabled, keys are returned as a
         :class:`str` object.
 
+    :param str cache_dir: The directory the cache will be stored in.
+    :param str flag: How the cache should be opened. See below for details.
+    :param mode: The Unix mode for the cache files.
+    :param str keyencoding: The encoding the keys use, defaults to 'utf-8'.
+        This is used if *serialize* is ``False``; the keys are treated as
+        :class:`bytes` objects.
+    :param bool serialize: Whether or not to (de)serialize the values. If a
+        cache is used with a :class:`~shelve.Shelf`, set this to ``False``.
+
+    The optional *flag* argument can be:
+
+    +---------+-------------------------------------------+
+    | Value   | Meaning                                   |
+    +=========+===========================================+
+    | ``'r'`` | Open existing cache for reading only      |
+    +---------+-------------------------------------------+
+    | ``'w'`` | Open existing cache for reading and       |
+    |         | writing                                   |
+    +---------+-------------------------------------------+
+    | ``'c'`` | Open cache for reading and writing,       |
+    |         | creating it if it doesn't exist (default) |
+    +---------+-------------------------------------------+
+    | ``'n'`` | Always create a new, empty cache, open    |
+    |         | for reading and writing                   |
+    +---------+-------------------------------------------+
+
+    If a ``'s'`` is appended to the *flag* argument, the cache will be opened
+    in sync mode. Writing to the cache will happen immediately and will not be
+    buffered.
+
     """
 
     def __init__(self, cache_dir, flag='c', mode=0o666, keyencoding='utf-8',
                  serialize=True):
-        """Initialize a :class:`FileCache` object.
-
-        :param str cache_dir: The directory the cache will be stored in.
-        :param flag: How the cache should be opened.
-            First character ('r', 'w', 'c', or 'n'):
-                'r': Open an existing cache in read-only mode.
-                'w': Open an existing cache in read/write mode.
-                'c': Open an existing cache in read/write mode or create a new
-                    cache if one doesn't exist then open it for read/write.
-                'n': Create a new cache even if one already exists, then open
-                    it for read/write.
-            Second character ('s'):
-                's': Open the cache in sync mode. Writes are immediately
-                    written to disk.
-        :type flag: str (1-2 characters long)
-        :param mode: The Unix mode for the cache files.
-        :param str keyencoding: The encoding the keys use, defaults to 'utf-8'.
-        :param bool serialize: Whether or not to (de)serialize the values.
-
-        """
+        """Initialize a :class:`FileCache` object."""
         if not isinstance(flag, str):
             raise TypeError("flag must be str not '%s'" % type(flag))
         elif flag[0] not in 'rwcn':
@@ -89,7 +100,11 @@ class FileCache(MutableMapping):
             os.makedirs(self.cache_dir)
 
     def clear(self):
-        """Delete all write buffer items and cache files."""
+        """Remove all items from the write buffer and cache.
+
+        The write buffer object and cache directory are not deleted.
+
+        """
         self.delete()
         self.create()
 
@@ -100,7 +115,12 @@ class FileCache(MutableMapping):
         shutil.rmtree(self.cache_dir)
 
     def close(self):
-        """Sync the write buffer, then close the cache."""
+        """Sync the write buffer, then close the cache.
+
+        If a closed :class:`FileCache` object's methods are called, a
+        :exc:`ValueError` will be raised.
+
+        """
         self.sync()
         self.sync = self.create = self.delete = self._closed
         self._write_to_file = self._read_to_file = self._closed
@@ -109,7 +129,11 @@ class FileCache(MutableMapping):
         self.__iter__ = self.__len__ = self.__contains__ = self._closed
 
     def sync(self):
-        """Sync the write buffer with the cache files."""
+        """Sync the write buffer with the cache files and clear the buffer.
+
+        If the :class:`FileCache` object was opened with the optional ``'s'``
+        *flag* argument, then calling :meth:`sync` will do nothing.
+        """
         if self._sync:
             return  # opened in sync mode, so skip the manual sync
         self._sync = True
