@@ -5,6 +5,8 @@ import pickle
 import shutil
 import tempfile
 
+import appdirs
+
 try:
     from collections.abc import MutableMapping
 except ImportError:
@@ -30,7 +32,7 @@ class FileCache(MutableMapping):
         object. If data serialization is disabled, keys are returned as a
         :class:`str` object.
 
-    :param str cache_dir: The directory the cache will be stored in.
+    :param str appname: The app/script the cache should be associated with.
     :param str flag: How the cache should be opened. See below for details.
     :param mode: The Unix mode for the cache files.
     :param str keyencoding: The encoding the keys use, defaults to 'utf-8'.
@@ -62,7 +64,7 @@ class FileCache(MutableMapping):
 
     """
 
-    def __init__(self, cache_dir, flag='c', mode=0o666, keyencoding='utf-8',
+    def __init__(self, appname, flag='c', mode=0o666, keyencoding='utf-8',
                  serialize=True):
         """Initialize a :class:`FileCache` object."""
         if not isinstance(flag, str):
@@ -78,7 +80,9 @@ class FileCache(MutableMapping):
         else:
             self._sync = False
             self._buffer = {}
-        self.cache_dir = cache_dir
+        self.cache_dir = os.path.join(appdirs.user_cache_dir(appname,
+                                                             appname),
+                                      'cache')
         exists = os.path.exists(self.cache_dir)
         if exists and 'n' in flag:
             self.clear()
@@ -86,7 +90,7 @@ class FileCache(MutableMapping):
         elif not exists and ('c' in flag or 'n' in flag):
             self.create()
         elif not exists:
-            raise FileNotFoundError("no such directory: '%s'" % cache_dir)
+            raise FileNotFoundError("no such directory: '%s'" % self.cache_dir)
         self._flag = 'rb' if 'r' in flag else 'wb'
         self._mode = mode
         self._keyencoding = keyencoding
