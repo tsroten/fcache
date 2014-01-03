@@ -80,7 +80,7 @@ Let's create a file cache:
 .. code:: python
 
     >>> from fcache.cache import FileCache
-    >>> mycache = FileCache('cache_dir')
+    >>> mycache = FileCache('appname')
 
 You can use the cache just like a :class:`dict`:
 
@@ -109,7 +109,7 @@ argument:
 
 .. code:: python
 
-    >>> mycache = FileCache('cache_dir', flag='cs')
+    >>> mycache = FileCache('appname', flag='cs')
 
 The ``'c'`` means that the object will open a cache if it exists, but will
 create a new one if no cache is found. The ``'s'`` means that the cache is
@@ -125,7 +125,7 @@ you'll need to tell fcache not to serialize the data:
 
 .. code:: python
 
-    >>> mycache = FileCache('cache_dir', serialize=False)
+    >>> mycache = FileCache('appname', serialize=False)
     >>> myshelf = Shelf(mycache)
 
 That's it! You can use the :class:`~shelve.Shelf` just like you normally
@@ -137,6 +137,12 @@ API
 .. automodule:: fcache.cache
 
 .. autoclass:: FileCache
+
+    .. data:: cache_dir
+
+        The absolute path to the directory where the cache files are stored.
+        The *appname* passed to :class:`FileCache` is used to determine a
+        system-appropriate place to store the cache files.
 
     .. automethod:: close
     .. automethod:: create
