@@ -17,8 +17,8 @@ import fcache.cache
 class TestFileCache(unittest.TestCase):
 
     def setUp(self):
-        self.cache_dir = 'test_cache'
-        self.cache = fcache.cache.FileCache(self.cache_dir)
+        self.appname = 'fcache'
+        self.cache = fcache.cache.FileCache(self.appname)
 
     def tearDown(self):
         try:
@@ -27,32 +27,31 @@ class TestFileCache(unittest.TestCase):
             pass
 
     def test_init(self):
-        self.assertTrue(os.path.exists(self.cache_dir))
-        self.assertEqual(self.cache.cache_dir, self.cache_dir)
+        self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.assertEqual(self.cache._flag, 'wb')
         self.assertEqual(self.cache._keyencoding, 'utf-8')
         self.assertFalse(self.cache._sync)
         self.assertEqual(self.cache._buffer, {})
         self.assertEqual(self.cache._mode, 0o666)
         self.cache.close()
-        self.cache = fcache.cache.FileCache(self.cache_dir, flag='ws')
+        self.cache = fcache.cache.FileCache(self.appname, flag='ws')
         self.assertTrue(self.cache._sync)
         self.assertFalse(hasattr(self.cache, '_buffer'))
 
         # test flag validation
-        self.assertRaises(TypeError, fcache.cache.FileCache, self.cache_dir, 1)
-        self.assertRaises(ValueError, fcache.cache.FileCache, self.cache_dir,
+        self.assertRaises(TypeError, fcache.cache.FileCache, self.appname, 1)
+        self.assertRaises(ValueError, fcache.cache.FileCache, self.appname,
                           'z')
-        self.assertRaises(ValueError, fcache.cache.FileCache, self.cache_dir,
+        self.assertRaises(ValueError, fcache.cache.FileCache, self.appname,
                           'rz')
 
     def test_delete_create(self):
-        self.assertTrue(os.path.exists(self.cache_dir))
+        self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.cache.delete()
-        self.assertFalse(os.path.exists(self.cache_dir))
+        self.assertFalse(os.path.exists(self.cache.cache_dir))
         self.assertFalse(hasattr(self.cache, '_buffer'))
         self.cache.create()
-        self.assertTrue(os.path.exists(self.cache_dir))
+        self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.assertTrue(hasattr(self.cache, '_buffer'))
 
     def test_clear(self):
@@ -60,7 +59,7 @@ class TestFileCache(unittest.TestCase):
         self.cache.sync()
         self.cache['bar'] = b'value'
         self.cache.clear()
-        self.assertTrue(os.path.exists(self.cache_dir))
+        self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.assertRaises(KeyError, self.cache.__getitem__, 'foo')
         self.assertRaises(KeyError, self.cache.__getitem__, 'bar')
 
@@ -74,7 +73,7 @@ class TestFileCache(unittest.TestCase):
             self.cache._encode_key('foo'))))
         self.assertFalse(self.cache._encode_key('foo') in self.cache._buffer)
         self.cache.clear()
-        self.cache = fcache.cache.FileCache(self.cache_dir, flag='cs')
+        self.cache = fcache.cache.FileCache(self.appname, flag='cs')
         self.cache['foo'] = b'value'
         self.assertTrue(os.path.exists(self.cache._key_to_filename(
             self.cache._encode_key('foo'))))
@@ -96,15 +95,15 @@ class TestFileCache(unittest.TestCase):
     def test_flag(self):
         self.cache.delete()
         self.assertRaises(FileNotFoundError, fcache.cache.FileCache,
-                          self.cache_dir, flag='r')
+                          self.appname, flag='r')
         self.assertRaises(FileNotFoundError, fcache.cache.FileCache,
-                          self.cache_dir, flag='w')
-        self.cache = fcache.cache.FileCache(self.cache_dir, flag='ns')
-        self.assertTrue(os.path.exists(self.cache_dir))
+                          self.appname, flag='w')
+        self.cache = fcache.cache.FileCache(self.appname, flag='ns')
+        self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.cache['foo'] = b'value'
-        self.cache = fcache.cache.FileCache(self.cache_dir, flag='n')
+        self.cache = fcache.cache.FileCache(self.appname, flag='n')
         self.assertEqual(len(self.cache), 0)
-        self.cache = fcache.cache.FileCache(self.cache_dir, flag='rs')
+        self.cache = fcache.cache.FileCache(self.appname, flag='rs')
         self.assertRaises(UnsupportedOperation, self.cache.__setitem__,
                           'foo', b'value')
 
@@ -129,8 +128,8 @@ class TestFileCache(unittest.TestCase):
 class TestShelfCache(unittest.TestCase):
 
     def setUp(self):
-        self.cache_dir = 'test_cache'
-        self.cache = shelve.Shelf(fcache.cache.FileCache(self.cache_dir,
+        self.appname = 'fcache'
+        self.cache = shelve.Shelf(fcache.cache.FileCache(self.appname,
                                   flag='cs', serialize=False))
 
     def tearDown(self):

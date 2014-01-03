@@ -27,4 +27,5 @@ setup(
     keywords=['cache', 'file', 'serialize'],
     packages=['fcache'],
     test_suite='fcache.tests',
+    install_requires=['appdirs'],
 )
