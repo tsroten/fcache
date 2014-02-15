@@ -8,7 +8,7 @@ to use, has an optional write buffer, and is
 .. code:: python
 
     >>> from fcache.cache import FileCache
-    >>> mycache = FileCache('cache_dir')
+    >>> mycache = FileCache('myapp')
     >>> mycache['foo'] = [1, 2, 3, 4, 5]
     >>> mycache['foo']
     [1, 2, 3, 4, 5]
