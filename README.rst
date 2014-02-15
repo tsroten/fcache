@@ -29,6 +29,8 @@ fcache supports Python 2.6, 2.7, and 3. To install fcache, use pip:
 
     $ pip install fcache
 
+fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
+
 Documentation
 -------------
 
