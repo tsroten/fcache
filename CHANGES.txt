@@ -1,6 +1,14 @@
 Change Log
 ----------
 
+v.0.4.2 (2014-03-01)
+~~~~~~~~~~~~~~~~~~~~
+* Adds unicode key support. Fixes #18.
+* Adds docs test environment to tox. Fixes #17.
+* Fixes code example typo. Fixes #16.
+* Fixes typo in docstrings about serialization. Fixes #15.
+* Adds not about appdirs requirement. Fixes #14.
+
 v.0.4.1 (2014-01-03)
 ~~~~~~~~~~~~~~~~~~~~
 
