@@ -9,6 +9,7 @@ import appdirs
 
 try:
     from collections.abc import MutableMapping
+    unicode = str
 except ImportError:
     # Python 2 imports
     from collections import MutableMapping
@@ -162,7 +163,7 @@ class FileCache(MutableMapping):
         :class:`str`.
 
         """
-        if isinstance(key, str):
+        if isinstance(key, str) or isinstance(key, unicode):
             key = key.encode(self._keyencoding)
         elif not isinstance(key, bytes):
             raise TypeError("key must be bytes or str")
