@@ -33,7 +33,8 @@ class FileCache(MutableMapping):
 
     .. NOTE::
         Keys and values are always stored as :class:`bytes` objects. If data
-        serialization is enabled, keys are returned as a :class:`str` object.
+        serialization is enabled, keys are returned as :class:`str` or
+        :class:`unicode` objects.
         If data serialization is disabled, keys are returned as a
         :class:`bytes` object.
 
