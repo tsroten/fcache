@@ -8,7 +8,7 @@ to use, has an optional write buffer, and is
 .. code:: python
 
     >>> from fcache.cache import FileCache
-    >>> mycache = FileCache('cache_dir')
+    >>> mycache = FileCache('myapp')
     >>> mycache['foo'] = [1, 2, 3, 4, 5]
     >>> mycache['foo']
     [1, 2, 3, 4, 5]
@@ -28,6 +28,8 @@ fcache supports Python 2.6, 2.7, and 3. To install fcache, use pip:
 .. code:: bash
 
     $ pip install fcache
+
+fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
 
 Documentation
 -------------

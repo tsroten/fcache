@@ -9,6 +9,7 @@ import appdirs
 
 try:
     from collections.abc import MutableMapping
+    unicode = str
 except ImportError:
     # Python 2 imports
     from collections import MutableMapping
@@ -32,9 +33,10 @@ class FileCache(MutableMapping):
 
     .. NOTE::
         Keys and values are always stored as :class:`bytes` objects. If data
-        serialization is enabled, keys are returned as a :class:`bytes`
-        object. If data serialization is disabled, keys are returned as a
-        :class:`str` object.
+        serialization is enabled, keys are returned as :class:`str` or
+        :class:`unicode` objects.
+        If data serialization is disabled, keys are returned as a
+        :class:`bytes` object.
 
     :param str appname: The app/script the cache should be associated with.
     :param str flag: How the cache should be opened. See below for details.
@@ -162,7 +164,7 @@ class FileCache(MutableMapping):
         :class:`str`.
 
         """
-        if isinstance(key, str):
+        if isinstance(key, str) or isinstance(key, unicode):
             key = key.encode(self._keyencoding)
         elif not isinstance(key, bytes):
             raise TypeError("key must be bytes or str")

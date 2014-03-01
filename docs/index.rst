@@ -12,8 +12,8 @@ reference.
 Installation
 ------------
 
-Installing fcache is easy. There are no third-party dependencies. As long as
-you have Python 2.6, 2.7 or 3, fcache should run just fine.
+Installing fcache is easy. fcache supports Python 2.6, 2.7, and 3.
+fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
 
 Pip
 ~~~

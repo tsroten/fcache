@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import shelve
 import sys
@@ -117,6 +118,15 @@ class TestFileCache(unittest.TestCase):
         self.assertRaises(TypeError, self.cache._encode_key, 1)
         self.cache._serialize = False
         self.assertEqual(self.cache._decode_key(skey_hex), bkey)
+
+    def test_unicode_key_encode_decode(self):
+        ukey = u'好'
+        ukey_hex = 'e5a5bd'
+        bkey = ukey.encode('utf-8')
+        self.assertEqual(self.cache._encode_key(ukey), ukey_hex)
+        self.assertEqual(self.cache._decode_key(ukey_hex), ukey)
+        self.cache._serialize = False
+        self.assertEqual(self.cache._decode_key(ukey_hex), bkey)
 
     def test_delitem(self):
         self.cache['a'] = b'1'
