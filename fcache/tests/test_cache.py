@@ -78,6 +78,8 @@ class TestFileCache(unittest.TestCase):
         self.cache['foo'] = b'value'
         self.assertTrue(os.path.exists(self.cache._key_to_filename(
             self.cache._encode_key('foo'))))
+        self.assertTrue('foo' in self.cache)
+
 
     def test_close(self):
         self.cache.close()

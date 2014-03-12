@@ -205,7 +205,10 @@ class FileCache(MutableMapping):
     def _all_keys(self):
         """Return a list of all encoded key names."""
         file_keys = [self._filename_to_key(fn) for fn in self._all_filenames()]
-        return set(file_keys + list(self._buffer))
+        if self._sync:
+            return set(file_keys)
+        else:
+            return set(file_keys + list(self._buffer))
 
     def _write_to_file(self, filename, bytesvalue):
         """Write bytesvalue to filename."""
