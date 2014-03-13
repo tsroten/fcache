@@ -1,0 +1,7 @@
+fcache is written and maintained by:
+
+- Thomas Roten <https://github.com/tsroten>
+
+With help from the following contributors:
+
+- David Triendl <https://github.com/soult>
