@@ -27,6 +27,14 @@ class TestFileCache(unittest.TestCase):
         except (ValueError, FileNotFoundError, OSError):
             pass
 
+    def _turn_sync_off(self, cache):
+        cache._sync = False
+        cache.create()
+
+    def _turn_sync_on(self, cache):
+        cache._sync = True
+        del cache._buffer
+
     def test_init(self):
         self.assertTrue(os.path.exists(self.cache.cache_dir))
         self.assertEqual(self.cache._flag, 'wb')
@@ -133,6 +141,26 @@ class TestFileCache(unittest.TestCase):
         self.assertEqual(self.cache['a'], b'1')
         del self.cache['a']
         self.assertFalse('a' in self.cache)
+
+    def test_iter(self):
+        self.cache['a'] = 1
+        self.cache.sync()
+        keys = [k for k in self.cache.keys()]
+        self.assertEqual(['a'], keys)
+
+        self._turn_sync_on(self.cache)
+        keys = [k for k in self.cache.keys()]
+        self.assertEqual(['a'], keys)
+
+    def test_contains(self):
+        self.cache['a'] = 1
+        self.cache.sync()
+        self.assertTrue('a' in self.cache)
+        self.assertFalse('b' in self.cache)
+
+        self._turn_sync_on(self.cache)
+        self.assertTrue('a' in self.cache)
+        self.assertFalse('b' in self.cache)
 
 
 class TestShelfCache(unittest.TestCase):
