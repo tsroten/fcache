@@ -1,8 +1,16 @@
 Change Log
 ----------
 
+v.0.4.3 (2014-03-13)
+~~~~~~~~~~~~~~~~~~~~
+
+* Creates AUTHORS.txt file.
+* Adds test for FileCache.__iter__() and FileCache.__contains__().
+* Fixes FileCache._all_keys assuming _buffer attribute (#19). Thanks soult!
+
 v.0.4.2 (2014-03-01)
 ~~~~~~~~~~~~~~~~~~~~
+
 * Adds unicode key support. Fixes #18.
 * Adds docs test environment to tox. Fixes #17.
 * Fixes code example typo. Fixes #16.
