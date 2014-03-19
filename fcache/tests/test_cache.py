@@ -182,6 +182,8 @@ class TestFileCache(unittest.TestCase):
         subcache1.delete()
         subcache2.delete()
 
+        self.assertRaises(ValueError, fcache.cache.FileCache, 'fcache.cache')
+
 
 class TestShelfCache(unittest.TestCase):
 

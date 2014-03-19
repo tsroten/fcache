@@ -96,6 +96,8 @@ class FileCache(MutableMapping):
                              flag)
 
         appname, subcache = self._parse_appname(appname)
+        if 'cache' in subcache:
+            raise ValueError("invalid subcache name: 'cache'.")
         self._is_subcache = bool(subcache)
         app_cache_dir = appdirs.user_cache_dir(appname, appname)
         subcache_dir = os.path.join(app_cache_dir, *subcache)
