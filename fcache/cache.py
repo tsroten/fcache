@@ -94,17 +94,20 @@ class FileCache(MutableMapping):
         elif len(flag) > 1 and flag[1] != 's':
             raise ValueError("invalid flag: '%s', second flag must be 's'" %
                              flag)
-        if len(flag) > 1 and flag[1] == 's':
-            self._sync = True
-        else:
-            self._sync = False
-            self._buffer = {}
+
         appname, subcache = self._parse_appname(appname)
         self._is_subcache = bool(subcache)
         app_cache_dir = appdirs.user_cache_dir(appname, appname)
         subcache_dir = os.path.join(app_cache_dir, *subcache)
         self.cache_dir = os.path.join(subcache_dir, 'cache')
         exists = os.path.exists(self.cache_dir)
+
+        if len(flag) > 1 and flag[1] == 's':
+            self._sync = True
+        else:
+            self._sync = False
+            self._buffer = {}
+
         if exists and 'n' in flag:
             self.clear()
             self.create()
@@ -112,6 +115,7 @@ class FileCache(MutableMapping):
             self.create()
         elif not exists:
             raise FileNotFoundError("no such directory: '%s'" % self.cache_dir)
+
         self._flag = 'rb' if 'r' in flag else 'wb'
         self._mode = mode
         self._keyencoding = keyencoding
