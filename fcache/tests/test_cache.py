@@ -14,6 +14,8 @@ else:
 
 import fcache.cache
 
+dirname = os.path.dirname
+
 
 class TestFileCache(unittest.TestCase):
 
@@ -161,6 +163,24 @@ class TestFileCache(unittest.TestCase):
         self._turn_sync_on(self.cache)
         self.assertTrue('a' in self.cache)
         self.assertFalse('b' in self.cache)
+
+    def test_subcache(self):
+        subcache1 = fcache.cache.FileCache(self.appname + '.subcache1')
+        subcache2 = fcache.cache.FileCache(self.appname +
+                                           '.subcache1.subcache2')
+
+        self.assertFalse(self.cache._is_subcache)
+        self.assertTrue(subcache1._is_subcache)
+        self.assertTrue(subcache2._is_subcache)
+        self.assertEqual(dirname(subcache1.cache_dir),
+                         dirname(dirname(subcache2.cache_dir)))
+        sc1app_cache_dir = dirname(dirname(subcache1.cache_dir))
+        sc2app_cache_dir = dirname(dirname(dirname(subcache2.cache_dir)))
+        self.assertEqual(dirname(self.cache.cache_dir), sc1app_cache_dir)
+        self.assertEqual(dirname(self.cache.cache_dir), sc2app_cache_dir)
+
+        subcache1.delete()
+        subcache2.delete()
 
 
 class TestShelfCache(unittest.TestCase):

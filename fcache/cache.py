@@ -68,6 +68,19 @@ class FileCache(MutableMapping):
     in sync mode. Writing to the cache will happen immediately and will not be
     buffered.
 
+    If an application needs to use more than one cache, then it should use
+    subcaches. To create a subcache, append a series of one or more names
+    separated by periods to the application name when creating a
+    :class:`FileCache` object (e.g. ``'appname.subcache'`` or
+    ``'appname.subcache.subcache'``).
+    Subcaches are a way for an application to use more than one cache without
+    polluting a user's cache directory. All caches -- main caches or subcaches
+    -- are totally independent. The only aspect in which they are linked is
+    that all of an application's caches exist in the same system directory.
+    Because each cache is independent of every other cache, calling
+    :meth:`delete` on an application's main cache will not delete data in
+    its subcaches.
+
     """
 
     def __init__(self, appname, flag='c', mode=0o666, keyencoding='utf-8',
@@ -86,9 +99,11 @@ class FileCache(MutableMapping):
         else:
             self._sync = False
             self._buffer = {}
-        self.cache_dir = os.path.join(appdirs.user_cache_dir(appname,
-                                                             appname),
-                                      'cache')
+        appname, subcache = self._parse_appname(appname)
+        self._is_subcache = bool(subcache)
+        app_cache_dir = appdirs.user_cache_dir(appname, appname)
+        subcache_dir = os.path.join(app_cache_dir, *subcache)
+        self.cache_dir = os.path.join(subcache_dir, 'cache')
         exists = os.path.exists(self.cache_dir)
         if exists and 'n' in flag:
             self.clear()
@@ -101,6 +116,11 @@ class FileCache(MutableMapping):
         self._mode = mode
         self._keyencoding = keyencoding
         self._serialize = serialize
+
+    def _parse_appname(self, appname):
+        """Splits an appname into the appname and subcache components."""
+        components = appname.split('.')
+        return components[0], components[1:]
 
     def create(self):
         """Create the write buffer and cache directory."""
