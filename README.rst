@@ -1,6 +1,12 @@
 fcache
 ======
 
+.. image:: https://badge.fury.io/py/fcache.png
+    :target: http://badge.fury.io/py/fcache
+        
+.. image:: https://travis-ci.org/tsroten/fcache.png?branch=develop
+    :target: https://travis-ci.org/tsroten/fcache
+
 fcache is a dictionary-like, file-based cache module for Python. It's simple
 to use, has an optional write buffer, and is
 `Shelf <http://docs.python.org/3.3/library/shelve.html#shelve.Shelf>`_-compatible.
