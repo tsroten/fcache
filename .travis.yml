@@ -12,4 +12,6 @@ python:
 
 install: pip install -r requirements.txt
 
+before_script: flake8 fcache
+
 script: python setup.py test
