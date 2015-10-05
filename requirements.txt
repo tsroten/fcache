@@ -1,3 +1,4 @@
 Sphinx
 tox
 wheel
+flake8

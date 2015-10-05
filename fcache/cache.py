@@ -269,7 +269,7 @@ class FileCache(MutableMapping):
             except KeyError:
                 pass
         filename = self._key_to_filename(ekey)
-        if not filename in self._all_filenames():
+        if filename not in self._all_filenames():
             raise KeyError(key)
         return self._read_from_file(filename)
 
@@ -280,7 +280,7 @@ class FileCache(MutableMapping):
             try:
                 del self._buffer[ekey]
             except KeyError:
-                if not filename in self._all_filenames():
+                if filename not in self._all_filenames():
                     raise KeyError(key)
         try:
             os.remove(filename)
