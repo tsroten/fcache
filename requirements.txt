@@ -1,0 +1,3 @@
+Sphinx
+tox
+wheel
