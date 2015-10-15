@@ -22,6 +22,7 @@ import os
 import errno
 import time
 import random
+import shutil
 
 
 can_rename_open_file = False
@@ -103,5 +104,10 @@ if os.name == 'nt':  # pragma: no cover
             except Exception:
                 pass
 else:
-    rename = os.rename
+    """
+    If dst on current filesystem then use
+    atomic rename. Otherwise, fall back to a
+    non-atomic copy and remove.
+    """
+    rename = shutil.move
     can_rename_open_file = True
