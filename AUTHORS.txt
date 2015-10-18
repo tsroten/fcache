@@ -5,3 +5,4 @@ fcache is written and maintained by:
 With help from the following contributors:
 
 - David Triendl <https://github.com/soult>
+- Philip Worrall
