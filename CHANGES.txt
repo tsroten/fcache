@@ -1,7 +1,16 @@
 Change Log
 ----------
 
-v.0.4.4( 2014-03-19)
+v.0.4.5 (2015-10-21)
+~~~~~~~~~~~~~~~~~~~~
+
+* Uses shutil.move() instead of os.rename(). Fixes #22. Thanks Philip!
+* Adds pypi and travis-ci badges to README.
+* Adds flake8 to travis-ci and tox.
+* Adds Python 3.5 tests.
+* Includes tests in release package.
+
+v.0.4.4 (2014-03-19)
 ~~~~~~~~~~~~~~~~~~~~
 
 * Adds support for subcaches. Resolves #20.

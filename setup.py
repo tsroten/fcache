@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name='fcache',
-    version='0.4.4',
+    version='0.4.5',
     author='Thomas Roten',
     author_email='thomas@roten.us',
     url='https://github.com/tsroten/fcache',
@@ -23,9 +23,12 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         ],
     keywords=['cache', 'file', 'serialize'],
-    packages=['fcache'],
+    packages=['fcache', 'fcache.tests'],
     test_suite='fcache.tests',
     install_requires=['appdirs'],
 )
