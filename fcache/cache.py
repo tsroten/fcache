@@ -46,6 +46,8 @@ class FileCache(MutableMapping):
         :class:`bytes` objects.
     :param bool serialize: Whether or not to (de)serialize the values. If a
         cache is used with a :class:`~shelve.Shelf`, set this to ``False``.
+    :param str app_cache_dir: absolute path to root cache directory to be
+        used in place of system-appropriate location determined by appdirs
 
     The optional *flag* argument can be:
 
@@ -84,7 +86,7 @@ class FileCache(MutableMapping):
     """
 
     def __init__(self, appname, flag='c', mode=0o666, keyencoding='utf-8',
-                 serialize=True):
+                 serialize=True, app_cache_dir=None):
         """Initialize a :class:`FileCache` object."""
         if not isinstance(flag, str):
             raise TypeError("flag must be str not '%s'" % type(flag))
@@ -99,7 +101,9 @@ class FileCache(MutableMapping):
         if 'cache' in subcache:
             raise ValueError("invalid subcache name: 'cache'.")
         self._is_subcache = bool(subcache)
-        app_cache_dir = appdirs.user_cache_dir(appname, appname)
+
+        if not app_cache_dir:
+            app_cache_dir = appdirs.user_cache_dir(appname, appname)
         subcache_dir = os.path.join(app_cache_dir, *subcache)
         self.cache_dir = os.path.join(subcache_dir, 'cache')
         exists = os.path.exists(self.cache_dir)
