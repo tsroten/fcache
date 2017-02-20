@@ -1,7 +1,7 @@
 Welcome to fcache
 =================
 
-fcache is a dictionary-like, file-based cache module for Python. This is  
+fcache is a dictionary-like, file-based cache module for Python. This is
 fcache's documentation. It covers installation, a tutorial, and the API
 reference.
 
@@ -48,8 +48,8 @@ To install the development version first make sure `Git <http://git-scm.org/>`_
 is installed. Then run:
 
 .. code-block:: bash
-   
-    $ git clone git://github.com/tsroten/fcache.git
+
+    $ git clone https://github.com/tsroten/fcache.git
     $ pip install -e fcache
 
 This will link the ``fcache`` directory into your ``site-packages``
@@ -184,7 +184,7 @@ API
         for ``iter(f.keys())`` (``iterkeys()`` in Python 2).
 
     .. automethod:: clear()
-        
+
     .. method:: get(key[, default])
 
         Return the value for *key* if *key* is in the cache, else *default*.
