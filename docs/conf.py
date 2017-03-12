@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'fcache'
-copyright = '2012-2014, Thomas Roten'
+copyright = '2017, Thomas Roten'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
