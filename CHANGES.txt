@@ -1,6 +1,14 @@
 Change Log
 ----------
 
+v.0.4.7 (2017-03-11)
+~~~~~~~~~~~~~~~~~~~~
+* Minor code changes/updates.
+
+v.0.4.6 (2017-01-30)
+~~~~~~~~~~~~~~~~~~~~
+* Allow app_cache_dir to be specified by user
+
 v.0.4.5 (2015-10-21)
 ~~~~~~~~~~~~~~~~~~~~
 

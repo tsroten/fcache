@@ -46,6 +46,8 @@ class FileCache(MutableMapping):
         :class:`bytes` objects.
     :param bool serialize: Whether or not to (de)serialize the values. If a
         cache is used with a :class:`~shelve.Shelf`, set this to ``False``.
+    :param str app_cache_dir: absolute path to root cache directory to be
+        used in place of system-appropriate location determined by appdirs
 
     The optional *flag* argument can be:
 
@@ -84,22 +86,24 @@ class FileCache(MutableMapping):
     """
 
     def __init__(self, appname, flag='c', mode=0o666, keyencoding='utf-8',
-                 serialize=True):
+                 serialize=True, app_cache_dir=None):
         """Initialize a :class:`FileCache` object."""
         if not isinstance(flag, str):
-            raise TypeError("flag must be str not '%s'" % type(flag))
+            raise TypeError("flag must be str not '{}'".format(type(flag)))
         elif flag[0] not in 'rwcn':
-            raise ValueError("invalid flag: '%s', first flag must be one of "
-                             "'r', 'w', 'c' or 'n'" % flag)
+            raise ValueError("invalid flag: '{}', first flag must be one of "
+                             "'r', 'w', 'c' or 'n'".format(flag))
         elif len(flag) > 1 and flag[1] != 's':
-            raise ValueError("invalid flag: '%s', second flag must be 's'" %
-                             flag)
+            raise ValueError("invalid flag: '{}', second flag must be "
+                             "'s'".format(flag))
 
         appname, subcache = self._parse_appname(appname)
         if 'cache' in subcache:
             raise ValueError("invalid subcache name: 'cache'.")
         self._is_subcache = bool(subcache)
-        app_cache_dir = appdirs.user_cache_dir(appname, appname)
+
+        if not app_cache_dir:
+            app_cache_dir = appdirs.user_cache_dir(appname, appname)
         subcache_dir = os.path.join(app_cache_dir, *subcache)
         self.cache_dir = os.path.join(subcache_dir, 'cache')
         exists = os.path.exists(self.cache_dir)
@@ -116,7 +120,8 @@ class FileCache(MutableMapping):
         elif not exists and ('c' in flag or 'n' in flag):
             self.create()
         elif not exists:
-            raise FileNotFoundError("no such directory: '%s'" % self.cache_dir)
+            raise FileNotFoundError("no such directory: '{}'".format(
+                self.cache_dir))
 
         self._flag = 'rb' if 'r' in flag else 'wb'
         self._mode = mode
@@ -250,7 +255,7 @@ class FileCache(MutableMapping):
             with open(filename, 'rb') as f:
                 return self._loads(f.read())
         except (IOError, OSError):
-            logger.warning('Error opening file: %s' % filename)
+            logger.warning('Error opening file: {}'.format(filename))
             return None
 
     def __setitem__(self, key, value):

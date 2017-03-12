@@ -6,3 +6,4 @@ With help from the following contributors:
 
 - David Triendl <https://github.com/soult>
 - Philip Worrall
+- Joel Dubowy <https://github.com/jdubowy>
