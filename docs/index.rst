@@ -5,14 +5,10 @@ fcache is a dictionary-like, file-based cache module for Python. This is
 fcache's documentation. It covers installation, a tutorial, and the API
 reference.
 
-.. NOTE::
-    fcache 0.4 is a backwards-incompatible rewrite. fcache's purpose is
-    essentially the same, but the API is different.
-
 Installation
 ------------
 
-Installing fcache is easy. fcache supports Python 2.6, 2.7, and 3.
+Installing fcache is easy. fcache supports Python 2.7 and 3.
 fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
 
 Pip
