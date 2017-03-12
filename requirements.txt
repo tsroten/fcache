@@ -2,3 +2,4 @@ Sphinx
 tox
 wheel
 flake8
+twine
