@@ -4,6 +4,8 @@ import shelve
 import sys
 import unittest
 
+import fcache.cache
+
 is_py3 = sys.version_info[0] > 2
 
 if is_py3:
@@ -11,8 +13,6 @@ if is_py3:
 else:
     FileNotFoundError = IOError
     UnsupportedOperation = IOError
-
-import fcache.cache
 
 dirname = os.path.dirname
 

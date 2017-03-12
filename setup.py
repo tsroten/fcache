@@ -26,7 +26,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        ],
+    ],
     keywords=['cache', 'file', 'serialize'],
     packages=['fcache', 'fcache.tests'],
     test_suite='fcache.tests',
