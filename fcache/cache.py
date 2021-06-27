@@ -302,3 +302,9 @@ class FileCache(MutableMapping):
     def __contains__(self, key):
         ekey = self._encode_key(key)
         return ekey in self._all_keys()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type_, value, traceback):
+        self.close()
