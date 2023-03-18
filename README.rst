@@ -26,6 +26,11 @@ to use, has an optional write buffer, and is
         ...
         KeyError: 'foo'
 
+.. code:: python
+
+   with FileCache('myapp') as mycache:
+       mycache['foo'] = [1, 2, 3, 4, 5]
+
 Install
 -------
 
