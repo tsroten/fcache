@@ -183,6 +183,32 @@ class TestFileCache(unittest.TestCase):
         subcache2.delete()
 
         self.assertRaises(ValueError, fcache.cache.FileCache, 'fcache.cache')
+    
+    def test_context_manager(self):
+        key = 'foo'
+        filename = self.cache._key_to_filename(self.cache._encode_key(key))
+        self.cache.close()
+        with fcache.cache.FileCache(self.appname) as cache:
+            cache[key] = b'value'
+            self.assertFalse(os.path.exists(filename))
+            self.assertTrue(cache._encode_key(key) in cache._buffer)
+        self.assertTrue(os.path.exists(filename))
+    
+    def test_optional_mode(self):
+        self.cache.clear()
+        key = 'foo'
+        filename = self.cache._key_to_filename(self.cache._encode_key(key))
+        self.cache.close()
+        with fcache.cache.FileCache(self.appname, mode=0o666) as cache:
+            cache[key] = b'value'
+            cache.sync()
+            statinfo = os.stat(filename)
+            self.assertEqual(oct(statinfo.st_mode & 0o777), '0o666')
+        with fcache.cache.FileCache(self.appname, mode=False) as cache:
+            cache[key] = b'value'
+            cache.sync()
+            statinfo = os.stat(filename)
+            self.assertEqual(oct(statinfo.st_mode & 0o777), '0o600')
 
 
 class TestShelfCache(unittest.TestCase):
