@@ -1,4 +1,5 @@
 import codecs
+from collections.abc import MutableMapping
 import logging
 import os
 import pickle
@@ -6,14 +7,6 @@ import shutil
 import tempfile
 
 import appdirs
-
-try:
-    from collections.abc import MutableMapping
-    unicode = str
-except ImportError:
-    # Python 2 imports
-    from collections import MutableMapping
-    FileNotFoundError = IOError
 
 from .posixemulation import rename
 
@@ -33,8 +26,7 @@ class FileCache(MutableMapping):
 
     .. NOTE::
         Keys and values are always stored as :class:`bytes` objects. If data
-        serialization is enabled, keys are returned as :class:`str` or
-        :class:`unicode` objects.
+        serialization is enabled, keys are returned as :class:`str` objects.
         If data serialization is disabled, keys are returned as a
         :class:`bytes` object.
 
@@ -195,7 +187,7 @@ class FileCache(MutableMapping):
         :class:`str`.
 
         """
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, str):
             key = key.encode(self._keyencoding)
         elif not isinstance(key, bytes):
             raise TypeError("key must be bytes or str")

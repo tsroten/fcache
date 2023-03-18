@@ -34,11 +34,11 @@ to use, has an optional write buffer, and is
 Install
 -------
 
-fcache supports Python 2.7 and 3. To install fcache, use pip:
+To install fcache, use pip:
 
 .. code:: bash
 
-    $ pip install fcache
+    $ pip3 install fcache
 
 fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
 

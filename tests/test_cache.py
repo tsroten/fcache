@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
+from io import UnsupportedOperation
 import os
 import shelve
 import sys
 import unittest
 
 import fcache.cache
-
-is_py3 = sys.version_info[0] > 2
-
-if is_py3:
-    from io import UnsupportedOperation
-else:
-    FileNotFoundError = IOError
-    UnsupportedOperation = IOError
 
 dirname = os.path.dirname
 
