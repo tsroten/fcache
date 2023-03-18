@@ -2,7 +2,6 @@
 from io import UnsupportedOperation
 import os
 import shelve
-import sys
 import unittest
 
 import fcache.cache
@@ -159,8 +158,8 @@ class TestFileCache(unittest.TestCase):
 
     def test_subcache(self):
         subcache1 = fcache.cache.FileCache(self.appname + '.subcache1')
-        subcache2 = fcache.cache.FileCache(self.appname +
-                                           '.subcache1.subcache2')
+        subcache2 = fcache.cache.FileCache(
+            self.appname + '.subcache1.subcache2')
 
         self.assertFalse(self.cache._is_subcache)
         self.assertTrue(subcache1._is_subcache)
@@ -176,7 +175,7 @@ class TestFileCache(unittest.TestCase):
         subcache2.delete()
 
         self.assertRaises(ValueError, fcache.cache.FileCache, 'fcache.cache')
-    
+
     def test_context_manager(self):
         key = 'foo'
         filename = self.cache._key_to_filename(self.cache._encode_key(key))
@@ -186,7 +185,7 @@ class TestFileCache(unittest.TestCase):
             self.assertFalse(os.path.exists(filename))
             self.assertTrue(cache._encode_key(key) in cache._buffer)
         self.assertTrue(os.path.exists(filename))
-    
+
     def test_optional_mode(self):
         self.cache.clear()
         key = 'foo'

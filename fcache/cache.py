@@ -32,7 +32,8 @@ class FileCache(MutableMapping):
 
     :param str appname: The app/script the cache should be associated with.
     :param str flag: How the cache should be opened. See below for details.
-    :param mode: The Unix mode for the cache files or False to prevent changing permissions.
+    :param mode: The Unix mode for the cache files or False to prevent changing
+        permissions.
     :param str keyencoding: The encoding the keys use, defaults to 'utf-8'.
         This is used if *serialize* is ``False``; the keys are treated as
         :class:`bytes` objects.
