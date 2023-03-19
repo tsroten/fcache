@@ -245,12 +245,8 @@ class FileCache(MutableMapping):
 
     def _read_from_file(self, filename):
         """Read data from filename."""
-        try:
-            with open(filename, 'rb') as f:
-                return self._loads(f.read())
-        except (IOError, OSError):
-            logger.warning('Error opening file: {}'.format(filename))
-            return None
+        with open(filename, 'rb') as f:
+            return self._loads(f.read())
 
     def __setitem__(self, key, value):
         ekey = self._encode_key(key)
@@ -281,12 +277,10 @@ class FileCache(MutableMapping):
             except KeyError:
                 pass
         filename = self._key_to_filename(ekey)
-        if not found_in_buffer and filename not in self._all_filenames():
-            raise KeyError(key)
-        try:
+        if filename in self._all_filenames():
             os.remove(filename)
-        except (IOError, OSError):
-            pass
+        elif not found_in_buffer:
+            raise KeyError(key)
 
     def __iter__(self):
         for key in self._all_keys():
