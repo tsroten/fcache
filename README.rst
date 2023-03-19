@@ -1,8 +1,8 @@
 fcache
 ======
 
-.. image:: https://badge.fury.io/py/fcache.png
-    :target: http://badge.fury.io/py/fcache
+.. image:: https://badge.fury.io/py/fcache.svg
+    :target: https://pypi.org/project/fcache
 
 .. image:: https://github.com/tsroten/fcache/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/tsroten/fcache/actions/workflows/ci.yml
