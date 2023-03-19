@@ -1,6 +1,14 @@
 Change Log
 ----------
 
+v.0.5.0 (2023-03-19)
+~~~~~~~~~~~~~~~~~~~~
+* Do not catch OSError exceptions, so client code can handle and retry if needed. Fixes #27.
+* Remove Python 2 support.
+* Allow the chmod option to be set to False to disable file mode changes. Thanks morpheus65535!
+* Adds context manager support. Thanks Yan Huihang!
+* Exclude tests from installed package. Thanks ameyajoshi99!
+
 v.0.4.7 (2017-03-11)
 ~~~~~~~~~~~~~~~~~~~~
 * Minor code changes/updates.
