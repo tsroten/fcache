@@ -8,7 +8,6 @@ reference.
 Installation
 ------------
 
-Installing fcache is easy. fcache supports Python 2.7 and 3.
 fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
 
 Pip
@@ -148,6 +147,10 @@ API
     In addition to the four methods listed above, :class:`FileCache` objects
     also support the following standard :class:`dict` operations and methods:
 
+    .. describe:: list(f)
+
+        Return a list of all the keys used in the :class:`FileCache` *f*.
+
     .. describe:: len(f)
 
         Return the number of items in the :class:`FileCache` *f*.
@@ -177,7 +180,7 @@ API
     .. describe:: iter(f)
 
         Return an iterator over the keys of the cache.  This is a shortcut
-        for ``iter(f.keys())`` (``iterkeys()`` in Python 2).
+        for ``iter(f.keys())``.
 
     .. automethod:: clear()
 
@@ -192,15 +195,10 @@ API
         Return a new view of the cache's items (``(key, value)`` pairs).
         See the :ref:`documentation of view objects <dict-views>`.
 
-        In Python 2, this method returns a copy of the cache's list of
-        ``(key, value)`` pairs.
-
     .. method:: keys()
 
         Return a new view of the cache's keys.  See the :ref:`documentation
         of view objects <dict-views>`.
-
-        In Python 2, this method returns a copy of the cache's list of keys.
 
     .. method:: pop(key[, default])
 
@@ -210,7 +208,7 @@ API
 
     .. method:: popitem()
 
-        Remove and return an arbitrary ``(key, value)`` pair from the cache.
+        Remove and return a ``(key, value)`` pair from the cache.
 
     .. method:: setdefault(key[, default])
 
@@ -227,7 +225,5 @@ API
 
         Return a new view of the cache's values.  See the
         :ref:`documentation of view objects <dict-views>`.
-
-        In Python 2, this method returns a copy of the cache's list of values.
 
 .. include:: ../CHANGES.txt
