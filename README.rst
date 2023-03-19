@@ -4,8 +4,8 @@ fcache
 .. image:: https://badge.fury.io/py/fcache.png
     :target: http://badge.fury.io/py/fcache
 
-.. image:: https://travis-ci.org/tsroten/fcache.png?branch=develop
-    :target: https://travis-ci.org/tsroten/fcache
+.. image:: https://github.com/tsroten/fcache/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/tsroten/fcache/actions/workflows/ci.yml
 
 fcache is a dictionary-like, file-based cache module for Python. It's simple
 to use, has an optional write buffer, and is
