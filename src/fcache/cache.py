@@ -78,57 +78,66 @@ class FileCache(MutableMapping):
 
     """
 
-    def __init__(self, appname, flag='c', mode=0o666, keyencoding='utf-8',
-                 serialize=True, app_cache_dir=None):
+    def __init__(
+        self,
+        appname,
+        flag="c",
+        mode=0o666,
+        keyencoding="utf-8",
+        serialize=True,
+        app_cache_dir=None,
+    ):
         """Initialize a :class:`FileCache` object."""
         if not isinstance(flag, str):
             raise TypeError("flag must be str not '{}'".format(type(flag)))
-        elif flag[0] not in 'rwcn':
-            raise ValueError("invalid flag: '{}', first flag must be one of "
-                             "'r', 'w', 'c' or 'n'".format(flag))
-        elif len(flag) > 1 and flag[1] != 's':
-            raise ValueError("invalid flag: '{}', second flag must be "
-                             "'s'".format(flag))
+        elif flag[0] not in "rwcn":
+            raise ValueError(
+                "invalid flag: '{}', first flag must be one of "
+                "'r', 'w', 'c' or 'n'".format(flag)
+            )
+        elif len(flag) > 1 and flag[1] != "s":
+            raise ValueError(
+                "invalid flag: '{}', second flag must be " "'s'".format(flag)
+            )
 
         appname, subcache = self._parse_appname(appname)
-        if 'cache' in subcache:
+        if "cache" in subcache:
             raise ValueError("invalid subcache name: 'cache'.")
         self._is_subcache = bool(subcache)
 
         if not app_cache_dir:
             app_cache_dir = appdirs.user_cache_dir(appname, appname)
         subcache_dir = os.path.join(app_cache_dir, *subcache)
-        self.cache_dir = os.path.join(subcache_dir, 'cache')
+        self.cache_dir = os.path.join(subcache_dir, "cache")
         exists = os.path.exists(self.cache_dir)
 
-        if len(flag) > 1 and flag[1] == 's':
+        if len(flag) > 1 and flag[1] == "s":
             self._sync = True
         else:
             self._sync = False
             self._buffer = {}
 
-        if exists and 'n' in flag:
+        if exists and "n" in flag:
             self.clear()
             self.create()
-        elif not exists and ('c' in flag or 'n' in flag):
+        elif not exists and ("c" in flag or "n" in flag):
             self.create()
         elif not exists:
-            raise FileNotFoundError("no such directory: '{}'".format(
-                self.cache_dir))
+            raise FileNotFoundError("no such directory: '{}'".format(self.cache_dir))
 
-        self._flag = 'rb' if 'r' in flag else 'wb'
+        self._flag = "rb" if "r" in flag else "wb"
         self._mode = mode
         self._keyencoding = keyencoding
         self._serialize = serialize
 
     def _parse_appname(self, appname):
         """Splits an appname into the appname and subcache components."""
-        components = appname.split('.')
+        components = appname.split(".")
         return components[0], components[1:]
 
     def create(self):
         """Create the write buffer and cache directory."""
-        if not self._sync and not hasattr(self, '_buffer'):
+        if not self._sync and not hasattr(self, "_buffer"):
             self._buffer = {}
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
@@ -192,7 +201,7 @@ class FileCache(MutableMapping):
             key = key.encode(self._keyencoding)
         elif not isinstance(key, bytes):
             raise TypeError("key must be bytes or str")
-        return codecs.encode(key, 'hex_codec').decode(self._keyencoding)
+        return codecs.encode(key, "hex_codec").decode(self._keyencoding)
 
     def _decode_key(self, key):
         """Decode key using hex_codec to retrieve the original key.
@@ -201,7 +210,7 @@ class FileCache(MutableMapping):
         Keys are returned as :class:`bytes` if serialization is disabled.
 
         """
-        bkey = codecs.decode(key.encode(self._keyencoding), 'hex_codec')
+        bkey = codecs.decode(key.encode(self._keyencoding), "hex_codec")
         return bkey.decode(self._keyencoding) if self._serialize else bkey
 
     def _dumps(self, value):
@@ -221,8 +230,10 @@ class FileCache(MutableMapping):
     def _all_filenames(self):
         """Return a list of absolute cache filenames"""
         try:
-            return [os.path.join(self.cache_dir, filename) for filename in
-                    os.listdir(self.cache_dir)]
+            return [
+                os.path.join(self.cache_dir, filename)
+                for filename in os.listdir(self.cache_dir)
+            ]
         except (FileNotFoundError, OSError):
             return []
 
@@ -245,7 +256,7 @@ class FileCache(MutableMapping):
 
     def _read_from_file(self, filename):
         """Read data from filename."""
-        with open(filename, 'rb') as f:
+        with open(filename, "rb") as f:
             return self._loads(f.read())
 
     def __setitem__(self, key, value):
@@ -270,7 +281,7 @@ class FileCache(MutableMapping):
 
     def __delitem__(self, key):
         ekey = self._encode_key(key)
-        found_in_buffer = hasattr(self, '_buffer') and ekey in self._buffer
+        found_in_buffer = hasattr(self, "_buffer") and ekey in self._buffer
         if not self._sync:
             try:
                 del self._buffer[ekey]

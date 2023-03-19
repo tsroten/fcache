@@ -1,7 +1,0 @@
-graft tests
-global-exclude *.py[cod]
-include *.txt *.rst
-include tox.ini
-include Makefile
-recursive-include docs *
-prune docs/_build
