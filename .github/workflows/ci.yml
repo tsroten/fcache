@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade hatch
       - name: Run tests
         run: |
-          hatch run +py=${{ matrix.py }} +type= test
+          hatch run test.py${{ matrix.python-version }}:run
   lint:
     runs-on: ubuntu-latest
     steps:
