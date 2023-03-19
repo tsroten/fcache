@@ -274,13 +274,15 @@ class FileCache(MutableMapping):
 
     def __delitem__(self, key):
         ekey = self._encode_key(key)
-        filename = self._key_to_filename(ekey)
+        found_in_buffer = hasattr(self, '_buffer') and ekey in self._buffer
         if not self._sync:
             try:
                 del self._buffer[ekey]
             except KeyError:
-                if filename not in self._all_filenames():
-                    raise KeyError(key)
+                pass
+        filename = self._key_to_filename(ekey)
+        if not found_in_buffer and filename not in self._all_filenames():
+            raise KeyError(key)
         try:
             os.remove(filename)
         except (IOError, OSError):

@@ -130,11 +130,31 @@ class TestFileCache(unittest.TestCase):
         self.cache._serialize = False
         self.assertEqual(self.cache._decode_key(ukey_hex), bkey)
 
-    def test_delitem(self):
+    def test_delitem_sync_off(self):
+        self._turn_sync_off(self.cache)
         self.cache['a'] = b'1'
-        self.assertEqual(self.cache['a'], b'1')
+        self.assertTrue('a' in self.cache)
         del self.cache['a']
         self.assertFalse('a' in self.cache)
+
+        self.cache['a'] = b'1'
+        self.cache.sync()
+        self.assertTrue('a' in self.cache)
+        del self.cache['a']
+        self.assertFalse('a' in self.cache)
+
+        with self.assertRaises(KeyError):
+            del self.cache['keynotfound']
+
+    def test_delitem_sync_on(self):
+        self._turn_sync_on(self.cache)
+        self.cache['a'] = b'1'
+        self.assertTrue('a' in self.cache)
+        del self.cache['a']
+        self.assertFalse('a' in self.cache)
+
+        with self.assertRaises(KeyError):
+            del self.cache['keynotfound']
 
     def test_iter(self):
         self.cache['a'] = 1
