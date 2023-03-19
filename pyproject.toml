@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://fcache.readthedocs.org"
+Documentation = "https://tsroten.github.io/fcache/"
 "Source code" = "https://github.com/tsroten/fcache"
 
 [tool.hatch.version]

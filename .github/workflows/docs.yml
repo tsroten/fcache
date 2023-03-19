@@ -2,7 +2,8 @@ name: docs
 
 on:
   push:
-    branches: ["develop"]
+    tags:
+    - '*'
   workflow_dispatch:
 
 permissions:
