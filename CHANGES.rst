@@ -1,10 +1,11 @@
 Change Log
 ==========
 
-UNRELEASED
+v.0.5.1 (2023-06-28)
 --------------------
 
 * Switch from deprecated appdirs dependency to platformdirs.
+* Restructure docs and add issue tracker/changes links to pypi.
 
 v.0.5.0 (2023-03-19)
 --------------------
