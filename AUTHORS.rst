@@ -1,3 +1,7 @@
+=======
+Credits
+=======
+
 fcache is written and maintained by:
 
 - Thomas Roten <https://github.com/tsroten>

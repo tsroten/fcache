@@ -37,8 +37,10 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://tsroten.github.io/fcache/"
-"Source code" = "https://github.com/tsroten/fcache"
+Documentation = "https://tsroten.github.io/fcache"
+Changes = "https://tsroten.github.io/fcache/history.html"
+"Issue Tracker" = "https://github.com/tsroten/fcache/issues"
+"Source Code" = "https://github.com/tsroten/fcache"
 
 [tool.hatch.version]
 path = "src/fcache/__init__.py"
