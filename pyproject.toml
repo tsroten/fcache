@@ -33,7 +33,7 @@ classifiers = [
     "Topic :: System :: Filesystems",
 ]
 dependencies = [
-    "appdirs",
+    "platformdirs ~= 3.0",
 ]
 
 [project.urls]
@@ -75,7 +75,12 @@ html = [
 ]
 
 [tool.hatch.envs.test.scripts]
-run = "python3 -m unittest"
+clean = "find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete"
+test = "python3 -Wdefault -m unittest -v"
+run = [
+    "clean",
+    "test"
+]
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
