@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class FileCache(MutableMapping):
     """A persistent file cache that is dictionary-like and has a write buffer.
 
-    *appname* is passed to `appdirs <https://pypi.python.org/pypi/appdirs/>`_
+    *appname* is passed to `appdirs <https://pypi.org/project/appdirs/>`_
     to determine a system-appropriate location for the cache files. The cache
     directory used is available via :data:`cache_dir`.
 
