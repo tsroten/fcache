@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+UNRELEASED
+--------------------
+
+* Switch from deprecated appdirs dependency to platformdirs.
+
 v.0.5.0 (2023-03-19)
 --------------------
 

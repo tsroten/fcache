@@ -1,7 +1,7 @@
 Installation
 ============
 
-fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
+fcache also requires the `platformdirs <https://github.com/platformdirs/platformdirs>`_ package.
 
 Pip
 ---
