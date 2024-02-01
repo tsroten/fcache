@@ -40,8 +40,6 @@ To install fcache, use pip:
 
     $ pip install fcache
 
-fcache also requires the `appdirs <https://github.com/ActiveState/appdirs>`_ package.
-
 Documentation
 -------------
 
