@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+v.0.5.2 (2024-02-22)
+--------------------
+
+* Fix a race condition when multiple processes use the same file cache. Thanks dimitris-flyr!
+
 v.0.5.1 (2023-06-28)
 --------------------
 
