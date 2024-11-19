@@ -1,8 +1,9 @@
 Change Log
 ==========
 
-TBD
+v.0.6.0 (2024-11-19)
 --------------------
+* Allow multiple processes to safely call delete() at the same time. Thanks jacob-indigo!
 * Remove EOL Python versions. Supporting only Python 3.9+
 
 v.0.5.2 (2024-02-22)
