@@ -155,7 +155,8 @@ class FileCache(MutableMapping):
         if not self._sync:
             del self._buffer
 
-        # Allow multiple processes to delete() at the same time, meaning some or all of cache_dir may already be deleted
+        # Allow multiple processes to delete() at the same time,
+        # meaning some or all of cache_dir may already be deleted
         def _on_error(function, path, excinfo):
             if excinfo[0] != FileNotFoundError:
                 raise
