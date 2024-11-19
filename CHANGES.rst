@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+TBD
+--------------------
+* Remove EOL Python versions. Supporting only Python 3.9+
+
 v.0.5.2 (2024-02-22)
 --------------------
 
